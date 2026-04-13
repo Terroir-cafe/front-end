@@ -1,11 +1,12 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import AppCadastro from './components/forms/appCadastro.vue';
 </script>
 
 <template>
   
   <RouterView />
+  <AppCadastro/>
 </template>
 
 <style scoped>
