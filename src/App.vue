@@ -1,11 +1,12 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import appFooter from './components/layout/appFooter.vue';
 </script>
 
 <template>
   
   <RouterView />
+  <app-footer />
 </template>
 
 <style scoped>
