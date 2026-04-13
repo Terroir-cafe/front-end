@@ -20,17 +20,17 @@
         </div>
         
         <div class="value-card">
-            <i class="fas fa-coffee"></i>
+            <i class="mdi mdi-coffee"></i>
             <span>Qualidade</span>
         </div>
         
-        <div class="value-card">
-            <i class="fas fa-heart"></i>
+        <div class="value-card">  
+        <i class="mdi mdi-currency-usd"></i>
             <span>Preço Baixo</span>
         </div>
         
         <div class="value-card">
-            <i class="fas fa-truck"></i>
+            <i class="mdi mdi-truck"></i>
             <span>Entrega Rápida</span>
         </div>
 
