@@ -1,11 +1,13 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import AppLogin from './components/forms/appLogin.vue';
 </script>
 
 <template>
   
   <RouterView />
+  <AppLogin />
+  
 </template>
 
 <style scoped>
