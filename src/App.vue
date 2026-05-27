@@ -4,6 +4,8 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <template>
   <RouterView />
+  <AppLogin />
+  
 </template>
 
 <style scoped>
