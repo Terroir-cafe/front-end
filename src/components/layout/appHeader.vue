@@ -78,6 +78,6 @@ header{
     top: 90px;
     left: 50%;
     transform: translateX(-50%);
-    width: 23.5%;
+    width: 100%;
 }
 </style>
