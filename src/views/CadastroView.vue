@@ -1,3 +1,45 @@
+<script setup>
+import appButton from '@/components/forms/appButton.vue'
+import appInput from '@/components/forms/appInput.vue'
+import { ref } from 'vue';
+import  { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth.js';
+
+const router = useRouter();
+const authStore = useAuthStore();
+
+const name = ref('');
+const email = ref('');
+const password = ref('');
+const confirmPassword = ref('');
+const loading = ref(false);
+const errorMessage = ref('');
+
+function validateForm(){
+    if(password.value !== confirmPassword.value){
+        errorMessage.value = 'As senhas não coincidem.';
+        return false;
+    }
+    return true;
+}
+
+async function handleRegister(){
+    if (validateForm() == true){
+        loading.value = true;
+        errorMessage.value = '';
+        try{
+            await authStore.register(name.value, email.value, password.value);
+            router.push('/login');
+        } catch (error){
+            errorMessage.value = error.response?.data?.message ?? 'Erro ao registrar. Tente novamente.';
+        } finally {
+            loading.value = false;
+        }
+    }else{
+        errorMessage.value = 'As senhas não coincidem.';
+    }
+}
+</script>
 <template>
     <div class="signup-container">
     <div class="title-wrapper">
@@ -5,18 +47,20 @@
         <div class="title-line"></div>
     </div>
 
-    <form class="signup-form" action="#" method="POST">
-        <input type="text" class="input-field" placeholder="Nome" required>
-        <input type="email" class="input-field" placeholder="Email" required>
-        <input type="password" class="input-field" placeholder="Senha" required>
-        <input type="password" class="input-field" placeholder="Confirmar Senha" required>
-        
-        <button type="submit" class="btn-submit">Confirmar</button>
+    <form class="signup-form" @submit.prevent="handleRegister">
+        <input v-model="name" type="text" placeholder="Nome" required />
+        <input v-model="email" type="email" placeholder="Email" required />
+        <input v-model="password" type="password" placeholder="Senha" required />
+        <input v-model="confirmPassword" type="password" placeholder="Confirmar Senha" required />
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+        <appButton type="submit" class="secondary" :disabled="loading">
+            {{ loading ? 'Processando...' : 'Confirmar' }}
+        </appButton>
     </form>
 
     <div class="login-prompt">
         <span>Já possui uma conta?</span>
-        <a href="/login" class="login-link">Entrar</a>
+        <router-link to="/login" class="login-link">Entrar</router-link>
     </div>
     </div>
 </template>

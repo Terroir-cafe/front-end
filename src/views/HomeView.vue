@@ -2,7 +2,6 @@
 import { onMounted, reactive } from 'vue'
 import { useProdutosStore } from '@/stores/produtos.js';
 import Loading from 'vue-loading-overlay';
-import appHeader from '@/components/layout/appHeader.vue';
 import appButton from '@/components/forms/appButton.vue';
 
 const store = useProdutosStore()
@@ -15,7 +14,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <appHeader show-menu show-cart />
   <main class="container">
     <div class="banner">
       <p class="imagem-container"><img src="/banner.png" :alt="store.produtos.nome" class="imagem-banner" /></p>
