@@ -4,12 +4,13 @@ import { RouterLink } from 'vue-router';
 import { mdiAccountCircle, mdiArrowExpandLeft } from '@mdi/js'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { useProdutosStore } from '@/stores/produtos.js'
+import { useAuthStore } from '@/stores/auth.js';
 
+const authStore = useAuthStore();
 const store = useProdutosStore()
 const mdiArrowExpandLeftIcon = ref(mdiArrowExpandLeft)
 const mdiAccountCircleIcon = ref(mdiAccountCircle)
 const isAdmin = ref(false);
-const isLoggedIn = ref(false);
 
 </script>
 <template>
@@ -36,9 +37,13 @@ const isLoggedIn = ref(false);
         </li>
         <li>
             <div class="perfil">
-                <SvgIcon type="mdi" :path="mdiAccountCircleIcon" />
-                <p v-if="isLoggedIn">Perfil</p>
-                <RouterLink to="/login" v-else>Login</RouterLink>
+                <RouterLink to="/usuario" v-if="authStore.isAuthenticated">
+                    <SvgIcon type="mdi" :path="mdiAccountCircleIcon" />
+                    <p>Perfil</p>
+                </RouterLink>
+                <RouterLink to="/login" v-else>
+                    Login
+                </RouterLink>
             </div>
         </li>
     </ul>

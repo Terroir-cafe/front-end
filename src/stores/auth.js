@@ -3,21 +3,22 @@ import { defineStore } from 'pinia';
 import authApi from '../api/authApi';
 
 export const useAuthStore = defineStore('auth', () => {
+    const user = ref(null);
     const accessToken = ref(localStorage.getItem('access_token'));
     const refreshToken = ref(localStorage.getItem('refresh_token'));
 
     const isAuthenticated = computed(() => !!accessToken.value);
 
-    async function register(email, password){
-        await authApi.register(email, password);
+    async function register(email, name, password){
+        await authApi.register(email, name, password);
     }
 
     async function login(email, password){
         const { data } = await authApi.login(email, password);
-        accessToken.value = data.access_token;
-        refreshToken.value = data.refresh_token;
-        localStorage.setItem('access_token', data.access_token);
-        localStorage.setItem('refresh_token', data.refresh_token);
+        accessToken.value = data.access;
+        refreshToken.value = data.refresh;
+        localStorage.setItem('access_token', data.access);
+        localStorage.setItem('refresh_token', data.refresh);
     }
 
     function logout(){
@@ -27,12 +28,27 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.removeItem('refresh_token');
     }
 
+    async function getUser(){
+        const { data } = await authApi.getUser();
+        user.value = data;
+    }
+
+    async function adicionarImagemAoUsuario(file){
+        await getUser()
+        const response = await authApi.uploadAvatar(file);
+        await authApi.patchUser(user.value.id, { "foto_attachment_key": response.data.attachment_key });
+        await getUser();
+    }
+
     return {
         accessToken,
         refreshToken,
         isAuthenticated,
+        user,
         login,
         logout,
-        register
+        register, 
+        getUser,
+        adicionarImagemAoUsuario,
     };
 });

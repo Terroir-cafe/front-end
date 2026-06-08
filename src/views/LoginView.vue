@@ -34,8 +34,8 @@ async function handleLogin(){
     </div>
 
     <form class="signup-form" @submit.prevent="handleLogin">
-        <appInput v-model="email" type="email" placeholder="Email" required />
-        <appInput v-model="password" type="password" placeholder="Senha" required />
+        <input v-model="email" type="email" placeholder="Email" required />
+        <input v-model="password" type="password" placeholder="Senha" required />
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
         <appButton type="submit" class="secondary" :disabled="loading">
             {{ loading ? 'Processando...' : 'Confirmar' }}

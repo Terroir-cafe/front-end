@@ -6,7 +6,7 @@ import appFooter from '@/components/layout/appFooter.vue';
 
 <template>
   <appHeader show-menu show-cart />
-  <RouterView />
+  <RouterView/>
   <appFooter />
 </template>
 

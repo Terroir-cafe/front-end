@@ -28,7 +28,7 @@ async function handleRegister(){
         loading.value = true;
         errorMessage.value = '';
         try{
-            await authStore.register(name.value, email.value, password.value);
+            await authStore.register(email.value, name.value, password.value);
             router.push('/login');
         } catch (error){
             errorMessage.value = error.response?.data?.message ?? 'Erro ao registrar. Tente novamente.';

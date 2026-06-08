@@ -23,15 +23,21 @@ const router = createRouter({
       path: '/login',
       name: 'Login',
       component: () => import('../views/LoginView.vue'),
+    },
+    {
+      path: '/usuario',
+      name: 'Perfil do Usuário',
+      component: () => import('../views/UsuarioView.vue'),
+      meta: { requiresAuth: true },
     }
   ],
 })
 
-  router.beforeEach((to) => {
-    const authStore = useAuthStore();
-    if(to.meta.requiresAuth && !authStore.isAuthenticated){
-      return '/login';
-    }
-  })
+router.beforeEach((to) => {
+  const authStore = useAuthStore();
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    return { name: 'login' };
+  }
+});
 
 export default router
