@@ -37,7 +37,7 @@ const isAdmin = ref(false);
         </li>
         <li>
             <div class="perfil">
-                <RouterLink to="/usuario" v-if="authStore.isAuthenticated">
+                <RouterLink to="/usuario" v-if="authStore.isAuthenticated" class="autenticado">
                     <SvgIcon type="mdi" :path="mdiAccountCircleIcon" />
                     <p>Perfil</p>
                 </RouterLink>
@@ -60,46 +60,38 @@ const isAdmin = ref(false);
     padding: 20px;
     z-index: 10;
 }
-
 .menu-hamburguer.ativo {
     transform: translateX(0); /* aparece */
 }
-
 .container-titulo {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-
 .titulo {
     color: #000;
     font-size: 32px;
     margin-bottom: 5px;
 }
-
 .linha-menu {
     height: 2px;
     background-color: #000;
 }
-
 .lista-menu {
     list-style: none;
     padding: 0;
 }
-
 .lista-menu li {
     padding-top: 10px;
     padding-bottom: 20px;
     border-bottom: 2px solid #000;
 }
-
 .lista-menu li a {
     text-decoration: none;
     color: #000;
     font-size: 24px;
 }
-
-.perfil{
+.autenticado{
     display: flex;
     align-items: center;
 }

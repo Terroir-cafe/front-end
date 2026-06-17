@@ -1,8 +1,10 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
+import { useRouter } from 'vue-router';
 import authApi from '../api/authApi';
 
 export const useAuthStore = defineStore('auth', () => {
+    const router = useRouter();
     const user = ref(null);
     const accessToken = ref(localStorage.getItem('access_token'));
     const refreshToken = ref(localStorage.getItem('refresh_token'));
@@ -26,6 +28,7 @@ export const useAuthStore = defineStore('auth', () => {
         refreshToken.value = null;
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
+        router.push("/login")
     }
 
     async function getUser(){
@@ -34,7 +37,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     async function adicionarImagemAoUsuario(file){
-        await getUser()
         const response = await authApi.uploadAvatar(file);
         await authApi.patchUser(user.value.id, { "foto_attachment_key": response.data.attachment_key });
         await getUser();
