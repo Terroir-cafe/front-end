@@ -7,10 +7,13 @@ defineProps({
 
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import SvgIcon from '@jamescoyle/vue-icon'
+import { useProdutosStore } from '@/stores/produtos.js'
 import { mdiCart, mdiMenu, mdiArrowLeft } from '@mdi/js'
+import appMenu from './appMenu.vue';
+import SvgIcon from '@jamescoyle/vue-icon'
 import appInput from '../forms/appInput.vue';
 const router = useRouter()
+const store = useProdutosStore()
 
 const mdiCartIcon = ref(mdiCart)
 const mdiMenuIcon = ref(mdiMenu)
@@ -20,9 +23,10 @@ const mdiArrowLeftIcon = ref(mdiArrowLeft)
 <template>
 <header>
     <div class="app-header">
+        <app-menu v-if="store.menuIsOpen" />
     <ul class="container">
     <li>
-        <button class="menu-hamburguer icon" v-if="showMenu">
+        <button class="menu-hamburguer icon" v-if="showMenu" @click="store.toggleMenu">
             <SvgIcon type="mdi" :path="mdiMenuIcon" />
         </button>
     </li>
@@ -78,6 +82,6 @@ header{
     top: 90px;
     left: 50%;
     transform: translateX(-50%);
-    width: 23.5%;
+    width: 100%;
 }
 </style>

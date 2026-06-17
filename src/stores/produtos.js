@@ -6,6 +6,7 @@ export const useProdutosStore = defineStore('produtos', () => {
 const produtos = ref([]);
 const loading = ref(false);
 const error = ref(null);
+const menuIsOpen = ref(false);
 
 async function fetchProdutos(){
     loading.value = true;
@@ -22,10 +23,16 @@ async function fetchProdutos(){
     console.log('Produtos carregados:', produtos.value);
 }
 
+function toggleMenu(){
+    menuIsOpen.value = !menuIsOpen.value;
+}
+
 return{
     produtos,
     loading,
     error,
+    menuIsOpen,
+    toggleMenu,
     fetchProdutos,
 }
 })

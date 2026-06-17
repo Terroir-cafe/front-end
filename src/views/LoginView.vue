@@ -1,3 +1,31 @@
+<script setup>
+import appButton from '@/components/forms/appButton.vue'
+import appInput from '@/components/forms/appInput.vue'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth.js';
+
+const router = useRouter();
+const authStore = useAuthStore();
+
+const email = ref('');
+const password = ref('');
+const loading = ref(false);
+const errorMessage = ref('');
+
+async function handleLogin(){
+    loading.value = true;
+    errorMessage.value = '';
+    try{
+        await authStore.login(email.value, password.value);
+        router.push('/');
+    } catch (error){
+        errorMessage.value = error.response?.data?.message ?? 'Erro ao fazer login. Verifique suas credenciais.';
+    } finally {
+        loading.value = false;
+    }
+}
+</script>
 <template>
     <div class="signup-container">
     <div class="title-wrapper">
@@ -5,15 +33,18 @@
         <div class="title-line"></div>
     </div>
 
-    <form class="signup-form" action="#" method="POST">
-        <input type="email" class="input-field" placeholder="Email" required>
-        <input type="password" class="input-field" placeholder="Senha" required>        
-        <button type="submit" class="btn-submit">Confirmar</button>
+    <form class="signup-form" @submit.prevent="handleLogin">
+        <input v-model="email" type="email" placeholder="Email" required />
+        <input v-model="password" type="password" placeholder="Senha" required />
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+        <appButton type="submit" class="secondary" :disabled="loading">
+            {{ loading ? 'Processando...' : 'Confirmar' }}
+        </appButton>
     </form>
 
     <div class="login-prompt">
         <span>Não possui uma conta?</span>
-        <a href="/signup" class="login-link">Cadastrar</a>
+        <router-link to="/cadastro" class="login-link">Cadastre-se</router-link>
     </div>
     </div>
 </template>
@@ -55,47 +86,6 @@
         flex-direction: column;
         align-items: center;
     }
-
-    .input-field {
-        width: 100%;
-        padding: 12px 20px;
-        margin-bottom: 25px;
-        border: 1px solid #e2c29f; 
-        border-radius: 25px; 
-        font-size: 16px;
-        font-weight: 600;
-        color: #333;
-        outline: none;
-        transition: border-color 0.2s ease;
-    }
-
-    .input-field:focus {
-        border-color: #6d423b; 
-    }
-
-    .input-field::placeholder {
-        color: #bfa89a; 
-        font-weight: 600;
-    }
-
-    .btn-submit {
-        background-color: #6d423b;
-        color: #ffffff;
-        border: none;
-        border-radius: 25px;
-        padding: 12px 40px;
-        font-size: 16px;
-        font-weight: 700;
-        margin-top: 40px; 
-        margin-bottom: 40px;
-        cursor: pointer;
-        width: max-content;
-    }
-
-    .btn-submit:active {
-        transform: scale(0.98); 
-    }
-
     .login-prompt {
         text-align: center;
         font-size: 14px;
