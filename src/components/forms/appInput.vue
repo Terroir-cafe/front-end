@@ -34,6 +34,7 @@ const value = computed({
     </div>
 </template>
 <style scoped>
+@media (max-width: 480px) {
 .label{
   display: block;
   margin-bottom: 4px;
@@ -58,5 +59,6 @@ input{
 input:focus{
   border-color: #DDb892;
   outline: none;
+}
 }
 </style>

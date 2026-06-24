@@ -84,4 +84,10 @@ header{
     transform: translateX(-50%);
     width: 100%;
 }
+
+@media (min-width: 1024px) {
+    .barra-de-pesquisa{
+        width: 50%;
+    }
+}
 </style>

@@ -66,6 +66,7 @@ async function handleRegister(){
 </template>
 
 <style scoped>
+@media (max-width: 480px) {
     .signup-container {
         padding: 40px 30px;
         width: 100%;
@@ -160,4 +161,5 @@ async function handleRegister(){
         font-weight: 700;
         text-decoration: none;
     }
+}
 </style>

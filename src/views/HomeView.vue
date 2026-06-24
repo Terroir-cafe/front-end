@@ -49,6 +49,8 @@ onMounted(() => {
   </main>
 </template>
 <style scoped>
+@media (max-width: 480px) {
+
 main {
   padding-left: 1vw;
   padding-right: 1vw;
@@ -120,4 +122,6 @@ main {
   border-radius: 16px;
   object-fit: contain;
 }
+}
+
 </style>

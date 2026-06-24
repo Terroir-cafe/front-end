@@ -45,6 +45,7 @@ onMounted(() => {
     </div>
 </template>
 <style scoped>
+@media (max-width: 480px) {
 .main-container {
     margin-top: 4vh;
 }
@@ -54,5 +55,6 @@ onMounted(() => {
     height: auto;
     border-radius: 50%;
     object-fit: cover;
+}
 }
 </style>

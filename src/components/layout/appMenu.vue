@@ -50,6 +50,7 @@ const isAdmin = ref(false);
 </div>
 </template>
 <style scoped>
+@media (max-width: 480px) {
 .menu-hamburguer {
     position: fixed;
     top: 0;
@@ -102,5 +103,6 @@ const isAdmin = ref(false);
 .perfil{
     display: flex;
     align-items: center;
+}
 }
 </style>

@@ -24,6 +24,7 @@ defineProps({
 </div>
 </template>
 <style scoped>
+@media (max-width: 480px) {
 .app-button {
     padding: 10px 20px;
     border: none;
@@ -54,5 +55,6 @@ defineProps({
 .variant-danger {
     background-color: #e74c3c;
     color: #fff;
+}
 }
 </style>
