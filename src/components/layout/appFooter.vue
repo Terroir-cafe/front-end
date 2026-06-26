@@ -20,7 +20,6 @@
 </template>
 
 <style scoped>
-@media (max-width: 480px) {
     .footer {
         background-color: #6d423b;
         color: white;
@@ -84,5 +83,4 @@
         font-size: 14px;
         margin-bottom: 3px;
     }
-}
 </style>

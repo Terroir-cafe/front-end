@@ -37,8 +37,7 @@
     </div>
 </template>
 
-<style scoped>
-@media (max-width: 480px) {
+<style scoped> 
         .content {
             padding: 0 20px 30px 20px;
             flex: 1;
@@ -57,6 +56,7 @@
             display: inline-block;
             position: relative;
             padding-bottom: 5px;
+            margin-top: 30px;
         }
 
         .section-title::after {
@@ -99,5 +99,4 @@
             font-size: 20px;
             color: #000; 
         }
-    }
 </style>

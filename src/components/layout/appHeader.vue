@@ -22,72 +22,99 @@ const mdiArrowLeftIcon = ref(mdiArrowLeft)
 </script>
 <template>
 <header>
-    <div class="app-header">
-        <app-menu v-if="store.menuIsOpen" />
-    <ul class="container">
-    <li>
-        <button class="menu-hamburguer icon" v-if="showMenu" @click="store.toggleMenu">
-            <SvgIcon type="mdi" :path="mdiMenuIcon" />
-        </button>
-    </li>
-    <li>
-        <button @click="router.back()" class="voltar icon" v-if="showBack">
-            <SvgIcon type="mdi" :path="mdiArrowLeftIcon" />
-        </button>
-    </li>
-    <li>
-        <p><img src="/Logo.png" alt="Terroir Café" class="logo" /></p>
-    </li>
-    <li>
-        <button @click="router.push('/cart')" class="carrinho icon" v-if="showCart">
-            <SvgIcon type="mdi" :path="mdiCartIcon" />
-        </button>
-    </li>
-    </ul>
-    <div class="barra-de-pesquisa">
-        <appInput placeholder="Buscar produtos..." />
-    </div>
-    </div>
+  <app-menu v-if="store.menuIsOpen" />
+
+  <div class="header-top">
+
+    <button
+      class="icon"
+      v-if="showMenu"
+      @click="store.toggleMenu"
+    >
+      <SvgIcon type="mdi" :path="mdiMenuIcon"/>
+    </button>
+
+    <button
+      class="icon"
+      v-if="showBack"
+      @click="router.back()"
+    >
+      <SvgIcon type="mdi" :path="mdiArrowLeftIcon"/>
+    </button>
+
+    <img src="/Logo.png"
+         alt="Terroir Café"
+         class="logo">
+
+    <button
+      class="icon"
+      v-if="showCart"
+      @click="router.push('/cart')"
+    >
+      <SvgIcon type="mdi" :path="mdiCartIcon"/>
+    </button>
+
+  </div>
+
+  <div class="barra-de-pesquisa">
+      <appInput placeholder="Buscar produtos..." />
+  </div>
+
 </header>
 </template>
 <style scoped>
 header{
-    background-color: #74403E;
+    background:#74403E;
     height: 12vh;
 }
-
+.header-top{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:20px;
+}
 .container{
     display: flex;
     justify-content: center;
     align-items: center;
     list-style: none;
-    padding: 20px;
 }
 
 .icon{
-    text-decoration: none;
-    background-color: transparent;
-    border: none;
-    padding: 10px;
-    color:#fff;
+    background:none;
+    border:none;
+    color:white;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
 }
 
 .logo{
-    width: 250px;
-    height: auto;
+    width:230px;
+    height:auto;
 }
 
 .barra-de-pesquisa{
-    position: absolute;
-    top: 90px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
+    width:100%;
+    margin-top:15px;
 }
 
-@media (min-width: 1024px) {
-    .barra-de-pesquisa{
-        width: 50%;
-    }
+@media (min-width:1024px){
+header{
+    padding:20px 40px;
+}
+.header-top{
+    max-width:1200px;
+    margin:auto;
+}
+.barra-de-pesquisa{
+    width:700px;
+    margin:20px auto 0;
+}
+.logo{
+    width:320px;
+}
 }
 </style>

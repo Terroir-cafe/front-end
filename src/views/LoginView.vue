@@ -34,8 +34,8 @@ async function handleLogin(){
     </div>
 
     <form class="signup-form" @submit.prevent="handleLogin">
-        <input v-model="email" type="email" placeholder="Email" required />
-        <input v-model="password" type="password" placeholder="Senha" required />
+        <appInput v-model="email" type="email" placeholder="Email" required />
+        <appInput v-model="password" type="password" placeholder="Senha" required />
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
         <appButton type="submit" class="secondary" :disabled="loading">
             {{ loading ? 'Processando...' : 'Confirmar' }}
@@ -86,10 +86,12 @@ async function handleLogin(){
         display: flex;
         flex-direction: column;
         align-items: center;
+        gap: 20px;
     }
     .login-prompt {
         text-align: center;
         font-size: 14px;
+        margin-top: 20px;
     }
 
     .login-prompt span {

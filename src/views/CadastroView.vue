@@ -48,10 +48,10 @@ async function handleRegister(){
     </div>
 
     <form class="signup-form" @submit.prevent="handleRegister">
-        <input v-model="name" type="text" placeholder="Nome" required />
-        <input v-model="email" type="email" placeholder="Email" required />
-        <input v-model="password" type="password" placeholder="Senha" required />
-        <input v-model="confirmPassword" type="password" placeholder="Confirmar Senha" required />
+        <appInput v-model="name" type="text" placeholder="Nome" required />
+        <appInput v-model="email" type="email" placeholder="Email" required />
+        <appInput v-model="password" type="password" placeholder="Senha" required />
+        <appInput v-model="confirmPassword" type="password" placeholder="Confirmar Senha" required />
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
         <appButton type="submit" class="secondary" :disabled="loading">
             {{ loading ? 'Processando...' : 'Confirmar' }}
@@ -66,7 +66,6 @@ async function handleRegister(){
 </template>
 
 <style scoped>
-@media (max-width: 480px) {
     .signup-container {
         padding: 40px 30px;
         width: 100%;
@@ -76,6 +75,8 @@ async function handleRegister(){
         display: flex;
         flex-direction: column;
         align-items: center;
+        margin-top: 50px;
+        border-radius: 15px;
     }
 
     .title-wrapper {
@@ -98,10 +99,12 @@ async function handleRegister(){
     }
 
     .signup-form {
-        width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
+        margin-bottom: 70px;
+        margin-top: 20px;
+        gap: 20px;
     }
 
     .input-field {
@@ -161,5 +164,4 @@ async function handleRegister(){
         font-weight: 700;
         text-decoration: none;
     }
-}
 </style>

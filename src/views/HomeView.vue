@@ -29,28 +29,17 @@ onMounted(() => {
         <Loading v-model:active="store.loading.value" is-full-page />
         <!-- Aqui vão os produtos em destaque -->
         <div v-for="produto in store.produtos" :key="produto.id" class="produto">
-          <ul>
-            <li>
-              <p class="imagem-produto"><img :src="produto.capa.url" :alt="produto.nome" class="imagem-produto" /></p>
-            </li>
-            <li>
-              <h3>{{ produto.nome }}</h3>
-            </li>
-            <li>
-              <p class="preco">R$ {{ produto.preco }}</p>
-            </li>
-            <li>
-              <appButton variant="primary">Adicionar ao carrinho</appButton>
-            </li>
-          </ul>
+          <img :src="produto.capa.url" :alt="produto.nome" class="imagem-produto" />
+            <h3>{{ produto.nome }}</h3>
+            <p class="descricao">{{ produto.descricao }}</p>
+            <p class="preco">R$ {{ produto.preco }}</p>
+            <appButton variant="primary">Adicionar ao carrinho</appButton>
         </div>
       </div>
     </div>
   </main>
 </template>
 <style scoped>
-@media (max-width: 480px) {
-
 main {
   padding-left: 1vw;
   padding-right: 1vw;
@@ -61,10 +50,9 @@ main {
 }
 
 .banner {
-  margin-bottom: 30px;
-  justify-content: center;
-  align-content: center;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .imagem-container {
@@ -99,16 +87,18 @@ main {
   border-radius: 56px;
   color: #fff;
 }
+.produto{
+  background:#E8B88E;
+  padding:20px;
+  border-radius:20px;
+  display:flex;
+  justify-content:center;
+}
+.produtos{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:30px;
 
-.lista-produtos .produtos ul {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  align-items: center;
-  align-content: center;
 }
 
 .preco{
@@ -117,11 +107,46 @@ main {
 }
 
 .imagem-produto {
-  width: 100%;
+  width: 100%;margin-bottom: 30px;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
   height: 300px;
   border-radius: 16px;
   object-fit: contain;
 }
+
+
+@media (min-width: 1024px) {
+  main{
+    max-width:1200px;
+    margin:auto;
+    padding:40px;
+}
+  .banner{
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
+    gap:60px;
+}
+.imagem-container{
+    width:50%;
 }
 
+.banner-info{
+  width:50%;main{
+  max-width:1200px;
+  margin:auto;
+  padding:40px;
+}
+}
+
+.banner .imagem-banner{
+height:500px;
+}
+
+.produtos{
+  grid-template-columns:repeat(2,1fr);
+}
+}
 </style>
