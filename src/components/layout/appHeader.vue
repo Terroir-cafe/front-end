@@ -22,6 +22,7 @@ const mdiArrowLeftIcon = ref(mdiArrowLeft)
 </script>
 <template>
 <header>
+  <nav>
   <app-menu v-if="store.menuIsOpen" />
 
   <div class="header-top">
@@ -59,7 +60,7 @@ const mdiArrowLeftIcon = ref(mdiArrowLeft)
   <div class="barra-de-pesquisa">
       <appInput placeholder="Buscar produtos..." />
   </div>
-
+</nav>
 </header>
 </template>
 <style scoped>
@@ -72,12 +73,6 @@ header{
     align-items:center;
     justify-content:center;
     gap:20px;
-}
-.container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    list-style: none;
 }
 
 .icon{
@@ -99,22 +94,17 @@ header{
 .barra-de-pesquisa{
     width:100%;
     margin-top:15px;
+    justify-content:center;
+    display:flex;
 }
 
 @media (min-width:1024px){
-header{
-    padding:20px 40px;
-}
-.header-top{
-    max-width:1200px;
-    margin:auto;
-}
-.barra-de-pesquisa{
-    width:700px;
-    margin:20px auto 0;
-}
-.logo{
-    width:320px;
-}
-}
+    .container{
+        max-width:1024px;
+        margin:0 auto;
+    }
+    .barra-de-pesquisa{
+        border-radius: 25px;;
+    }
+  }
 </style>
