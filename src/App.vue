@@ -5,11 +5,27 @@ import appFooter from '@/components/layout/appFooter.vue';
 </script>
 
 <template>
-  <appHeader show-menu show-cart />
-  <RouterView/>
-  <appFooter />
-</template>
+  <div class="layout">
 
+    <appHeader />
+
+    <main>
+      <router-view />
+    </main>
+
+    <appFooter />
+
+  </div>
+</template> 
 <style scoped>
+.layout{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+}
 
+main{
+    flex:1;
+}
 </style>
+

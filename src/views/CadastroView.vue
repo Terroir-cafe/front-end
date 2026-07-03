@@ -67,15 +67,19 @@ async function handleRegister(){
 
 <style scoped>
     .signup-container {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         padding: 40px 30px;
-        width: 100%;
         max-width: 480px;
         margin: 0 auto;
         background-color: #ffffff;
         display: flex;
+        flex: 1;
         flex-direction: column;
         align-items: center;
-        margin-top: 50px;
+        justify-content: center;
         border-radius: 15px;
     }
 
@@ -93,12 +97,7 @@ async function handleRegister(){
     }
 
     .title-line {
-        width: 100%;
-        height: 2px;
-        background-color: #000000;
-    }
-
-    .signup-form {
+        width: 100%;.signup-form {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -106,6 +105,17 @@ async function handleRegister(){
         margin-top: 20px;
         gap: 20px;
     }
+        height: 2px;
+        background-color: #000000;
+    }
+
+    .signup-form{
+    display:flex;
+    flex-direction:column;
+    align-items:center; 
+
+    margin:40px 0;
+}
 
     .input-field {
         width: 100%;

@@ -95,7 +95,7 @@ header{
     width:100%;
     margin-top:15px;
     justify-content:center;
-    display:flex;
+    display:flex
 }
 
 @media (min-width:1024px){
