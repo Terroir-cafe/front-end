@@ -26,135 +26,181 @@ async function handleLogin(){
     }
 }
 </script>
+
 <template>
     <div class="signup-container">
-    <div class="title-wrapper">
-        <h2 class="signup-title">Faça Login</h2>
-        <div class="title-line"></div>
-    </div>
+        <div class="title-wrapper">
+            <h2 class="signup-title">Faça Login</h2>
+            <div class="title-line"></div>
+        </div>
 
-    <form class="signup-form" @submit.prevent="handleLogin">
-        <appInput v-model="email" type="email" placeholder="Email" required />
-        <appInput v-model="password" type="password" placeholder="Senha" required />
-        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-        <appButton type="submit" class="secondary" :disabled="loading">
-            {{ loading ? 'Processando...' : 'Confirmar' }}
-        </appButton>
-    </form>
+        <form class="signup-form" @submit.prevent="handleLogin">
+            <appInput v-model="email" type="email" placeholder="Email" required class="custom-input" />
+            <appInput v-model="password" type="password" placeholder="Senha" required class="custom-input" />
+            
+            <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+            
+            <appButton type="submit" class="btn-confirmar" :disabled="loading">
+                {{ loading ? 'Processando...' : 'Confirmar' }}
+            </appButton>
+        </form>
 
-    <div class="login-prompt">
-        <span>Não possui uma conta?</span>
-        <router-link to="/cadastro" class="login-link">Cadastre-se</router-link>
-    </div>
+        <div class="login-prompt">
+            <span>Não possui uma conta?</span>
+            <router-link to="/cadastro" class="login-link">Cadastre-se</router-link>
+        </div>
     </div>
 </template>
 
 <style scoped>
-@media (max-width: 480px) {
+/* --- CONTAINER PRINCIPAL --- */
+.signup-container {
+    padding: 60px 40px;
+    width: 100%;
+    max-width: 450px;
+    margin: 40px auto;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+/* --- TOPO / TÍTULO --- */
+.title-wrapper {
+    width: 100%;
+    max-width: 340px;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.signup-title {
+    color: #000000;
+    font-size: 32px;
+    font-weight: 800;
+    margin: 0 0 10px 0;
+    letter-spacing: -0.5px;
+}
+
+.title-line {
+    width: 100%;
+    height: 2px;
+    background-color: #000000;
+}
+
+/* --- FORMULÁRIO --- */
+.signup-form {
+    width: 100%;
+    max-width: 340px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+}
+
+/* CORREÇÃO DAS BORDAS DUPLICADAS:
+  Removemos estilos do container do appInput e aplicamos a pílula APENAS na tag input nativa.
+*/
+.custom-input {
+    width: 100% !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+:deep(.custom-input input) {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    height: 52px !important;
+    border-radius: 30px !important; /* Formato pílula perfeito */
+    border: 3px solid #cccccc !important; /* Borda única cinza da imagem */
+    background-color: #ffffff !important;
+    padding: 0 24px !important;
+    font-size: 16px !important;
+    color: #333333 !important;
+    outline: none !important;
+}
+
+/* --- BOTÃO CONFIRMAR --- */
+/* Remove estilos duplicados de possíveis wrappers do appButton */
+.btn-confirmar {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin-top: 15px !important;
+}
+
+:deep(.btn-confirmar button),
+:deep(.btn-confirmar .btn) {
+    background-color: #eeeeee !important; 
+    color: #000000 !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    border: none !important;
+    padding: 14px 50px !important;
+    border-radius: 25px !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+/* Se o componente injetar direto a tag button sem wrapper */
+button.btn-confirmar {
+    background-color: #eeeeee !important; 
+    color: #000000 !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    border: none !important;
+    padding: 14px 50px !important;
+    border-radius: 25px !important;
+    cursor: pointer !important;
+}
+
+.btn-confirmar:hover :deep(button),
+button.btn-confirmar:hover {
+    background-color: #e0e0e0 !important;
+}
+
+/* --- TEXTOS INFERIORES --- */
+.error-message {
+    color: #ff3333;
+    font-size: 14px;
+    margin: 0;
+    text-align: center;
+}
+
+.login-prompt {
+    text-align: center;
+    font-size: 15px;
+    margin-top: 40px;
+}
+
+.login-prompt span {
+    color: #000000;
+    font-weight: 800;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.login-link {
+    color: #c49a6c;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+}
+
+/* --- DESKTOP --- */
+@media (min-width: 1024px) {
     .signup-container {
-        padding: 40px 30px;
-        width: 100%;
-        max-width: 480px;
-        margin: 0 auto;
-        background-color: #ffffff;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .title-wrapper {
-        width: 100%;
-        text-align: center;
-        margin-bottom: 40px;
-    }
-
-    .signup-title {
-        color: #000000;
-        font-size: 28px;
-        font-weight: 800;
-        margin-bottom: 10px;
-    }
-
-    .title-line {
-        width: 100%;
-        height: 2px;
-        background-color: #000000;
-    }
-
-    .signup-form {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-    }
-    .login-prompt {
-        text-align: center;
-        font-size: 14px;
-        margin-top: 20px;
-    }
-
-    .login-prompt span {
-        color: #000000;
-        font-weight: 800;
-        display: block;
-        margin-bottom: 5px;
-    }
-
-    .login-link {
-        color: #e2c29f; 
-        font-weight: 700;
-        text-decoration: none;
+        max-width: 550px;
+        padding: 80px 60px;
+        border-radius: 40px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
     }
 }
-    /* Versão Desktop */
-    @media (min-width: 768px) {
-        .signup-container {
-            max-width: 600px;
-            padding: 60px 50px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            border-radius: 56px;
-        }
-
-        .signup-title {
-            font-size: 32px;
-        }
-
-        .input-field {
-            padding: 15px 25px;
-            font-size: 18px;
-        }
-
-        .btn-submit {
-            padding: 15px 50px;
-            font-size: 18px;
-            margin-top: 50px;
-            margin-bottom: 50px;
-        }
-
-        .login-prompt {
-            font-size: 16px;
-        }
-    }
-
-    @media (min-width: 1024px) {
-        .signup-container {
-            max-width: 700px;
-            padding: 80px 60px;
-        }
-
-        .signup-title {
-            font-size: 36px;
-        }
-
-        .input-field {
-            padding: 18px 30px;
-            font-size: 20px;
-        }
-
-        .btn-submit {
-            padding: 18px 60px;
-            font-size: 20px;
-        }
-    }
 </style>

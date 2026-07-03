@@ -23,7 +23,7 @@
     .footer {
         background-color: #6d423b;
         color: white;
-        border-radius: 15px;
+        border-radius: 15px 15px 0px 0px;
         padding: 25px 20px 20px 20px;
         display: grid;
         grid-template-columns: 1fr auto;

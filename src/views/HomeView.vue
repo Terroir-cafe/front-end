@@ -20,7 +20,7 @@ onMounted(() => {
       <p>
         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quis non corporis veritatis incidunt ullam, esse
         deleniti accusamus, veniam iste unde mollitia blanditiis libero inventore animi aliquam perferendis molestias
-        enim explicabo. 
+        enim explicabo.
       </p>
     </div>
     <div class="lista-produtos">

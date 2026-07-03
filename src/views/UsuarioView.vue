@@ -25,7 +25,7 @@ onMounted(() => {
     <div class="main-container">
         <div>
             <p>
-                <img :src="authStore.user?.foto.url" alt="Avatar do usuário" class="avatar"
+                <img :src="authStore.user?.foto.url" alt="Avatar do usuário" class="avatar">
             </p>
         </div>
         <div class="user-container">
