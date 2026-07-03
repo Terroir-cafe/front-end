@@ -66,7 +66,6 @@ const mdiAccountIcon = ref(mdiAccountCircle)
 .custom-header {
     background: #6d423b; /* Ajustado para bater com o marrom café exato da foto */
     padding: 15px 20px;
-    border-radius: 0 0 25px 25px; /* Curvatura inferior do header visível na imagem */
     box-sizing: border-box;
 }
 
