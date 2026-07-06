@@ -1,108 +1,65 @@
 <script setup>
-import { ref } from 'vue'
-import { RouterLink } from 'vue-router';
-import { mdiAccountCircle, mdiArrowExpandLeft } from '@mdi/js'
-import SvgIcon from '@jamescoyle/vue-icon'
-import { useProdutosStore } from '@/stores/produtos.js'
-import { useAuthStore } from '@/stores/auth.js';
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 
-const authStore = useAuthStore();
-const store = useProdutosStore()
-const mdiArrowExpandLeftIcon = ref(mdiArrowExpandLeft)
-const mdiAccountCircleIcon = ref(mdiAccountCircle)
-const isAdmin = ref(false);
+const router = useRouter()
 
+const menuRoutes = computed(()=> router.getRoutes()
+.filter(route => route.meta?.menu !== false && route.name)
+.map(route => ({name: route.name, path: route.path}))
+)
 </script>
 <template>
-<div class="menu-hamburguer">
-    <div class="container-titulo">
-    <h2 class="titulo">
-        Menu
-    </h2>
-    <SvgIcon type="mdi" :path="mdiArrowExpandLeftIcon" @click="store.toggleMenu"/>
+    <div class="app-menu">
+        <h2>Menu</h2>
+        <ul>
+        <li v-for="route in menuRoutes" :key="route.path" @click="router.push(`${route.path}`)">
+            <p>{{ route.name }}</p>
+        </li>
+        </ul>
     </div>
-    <div class="linha-menu"></div>
-    <ul class="lista-menu">
-        <li>
-            <RouterLink to="/">Home</RouterLink>
-        </li>
-        <li>
-            <RouterLink to="/sobre">Sobre</RouterLink>
-        </li>
-        <li>
-            <RouterLink to="/cadastro">Contato</RouterLink>
-        </li>
-        <li v-if="isAdmin">
-            <RouterLink to="/cadastrar-objeto">Cadastrar Produto</RouterLink>
-        </li>
-        <li>
-            <div class="perfil">
-                <RouterLink to="/usuario" v-if="authStore.isAuthenticated">
-                    <SvgIcon type="mdi" :path="mdiAccountCircleIcon" />
-                    <p>Perfil</p>
-                </RouterLink>
-                <RouterLink to="/login" v-else>
-                    Login
-                </RouterLink>
-            </div>
-        </li>
-    </ul>
-</div>
 </template>
 <style scoped>
-@media (max-width: 480px) {
-.menu-hamburguer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 250px; /* define largura do menu */
-    height: 100vh; /* ocupa altura toda */
-    background-color: white; /* importante pra aparecer */
-    padding: 20px;
-    z-index: 10;
-}
-
-.menu-hamburguer.ativo {
-    transform: translateX(0); /* aparece */
-}
-
-.container-titulo {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.titulo {
-    color: #000;
-    font-size: 32px;
-    margin-bottom: 5px;
-}
-
-.linha-menu {
-    height: 2px;
-    background-color: #000;
-}
-
-.lista-menu {
-    list-style: none;
-    padding: 0;
-}
-
-.lista-menu li {
-    padding-top: 10px;
-    padding-bottom: 20px;
-    border-bottom: 2px solid #000;
-}
-
-.lista-menu li a {
+.app-menu p{
     text-decoration: none;
-    color: #000;
-    font-size: 24px;
+    color: inherit;
+    font-size: 1.5rem;
+}
+.app-menu h2{
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color:#fff;
+    margin-left: 2vw;
 }
 
-.perfil{
-    display: flex;
-    align-items: center;
+.app-menu{
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background-color: #6d423b;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
 }
+.app-menu ul{
+    list-style: none;
+    padding: 2vw;
+    margin: 0;
+    margin: 1vh 0 0 0; 
+}
+
+.app-menu li{
+    margin-bottom: 1rem;
+    padding: 2vw;
+    border: 2px solid #fff;
+    color: #fff;
+    border-radius: 35px;
+}
+.app-menu li:active{
+    background-color: #fff;
+    color: #6d423b;
+    border: 2 px solid #6d423b;
+    transition: background-color 0.5s, color 0.5s, border 0.5s;
 }
 </style>

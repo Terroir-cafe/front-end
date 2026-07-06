@@ -10,7 +10,6 @@ import { useRouter } from 'vue-router'
 import { useProdutosStore } from '@/stores/produtos.js'
 import { useAuthStore } from '@/stores/auth.js'
 import { mdiCart, mdiMenu, mdiArrowLeft, mdiAccountCircle } from '@mdi/js'
-import appMenu from './appMenu.vue';
 import SvgIcon from '@jamescoyle/vue-icon'
 import appInput from '../forms/appInput.vue';
 
@@ -27,7 +26,6 @@ const mdiAccountIcon = ref(mdiAccountCircle)
 <template>
 <header class="custom-header">
   <nav class="header-nav">
-    <app-menu v-if="store.menuIsOpen" />
 
     <div class="nav-left">
       <button class="icon" v-if="showMenu" @click="store.toggleMenu">
