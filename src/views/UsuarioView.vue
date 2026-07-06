@@ -1,11 +1,16 @@
 <script setup>
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.js';
 import appButton from '@/components/forms/appButton.vue'
+import { mdiAccountCircle } from '@mdi/js'
+import SvgIcon from '@jamescoyle/vue-icon'
 
 const authStore = useAuthStore();
 const isLoading = ref(false);
 const selectedFile = ref(null);
+const router = useRouter();
+const mdiAccountIcon = ref(mdiAccountCircle)
 
 function handleFileChange(event) {
     selectedFile.value = event.target.files[0];
@@ -17,6 +22,12 @@ function handleFileChange(event) {
     isLoading.value = false;
 };
 
+
+function handleLogout() {
+    authStore.logout();
+    router.push('/login');
+}
+
 onMounted(() => {
     authStore.getUser();
 });
@@ -26,7 +37,8 @@ onMounted(() => {
         <div class="user-info-container">
         <div>
             <p>
-                <img :src="authStore.user?.foto?.url" alt="Avatar do usuário" class="avatar">
+                <img :src="authStore.user?.foto?.url" class="avatar" v-if="authStore.user?.foto?.url">
+                <SvgIcon type="mdi" :path="mdiAccountIcon" class="user-icon avatar" v-else/>
             </p>
         </div>
         <div class="user-container">
@@ -42,7 +54,7 @@ onMounted(() => {
                     {{ isLoading ? 'Enviando...' : 'Enviar' }}
                 </appButton>
             </form>
-            <appButton @click="authStore.logout" variant="danger">Sair da conta</appButton>
+            <appButton @click="handleLogout" variant="danger">Sair da conta</appButton>
         </div>
     </div>
 </template>

@@ -49,7 +49,8 @@ const mdiAccountIcon = ref(mdiAccountCircle)
 
     <div class="nav-user-desktop" v-if="authStore.isAuthenticated">
       <button class="btn-user" @click="router.push('/usuario')">
-        <img :src="authStore.user?.foto.url">
+        <img :src="authStore.user?.foto.url" v-if="authStore.user?.foto?.url">
+        <SvgIcon type="mdi" :path="mdiAccountIcon" class="user-icon" v-else/>
         <span>{{ authStore.user?.name || 'Usuário' }}</span>
       </button>
     </div>

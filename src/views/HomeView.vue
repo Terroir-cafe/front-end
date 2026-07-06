@@ -12,16 +12,23 @@ onMounted(() => {
   console.log(produtos)
 })
 </script>
-
 <template>
   <main class="container">
     <div class="banner">
       <p class="imagem-container"><img src="/banner.png" :alt="store.produtos.nome" class="imagem-banner" /></p>
-      <p>
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quis non corporis veritatis incidunt ullam, esse
-        deleniti accusamus, veniam iste unde mollitia blanditiis libero inventore animi aliquam perferendis molestias
-        enim explicabo.
+      <div class="banner-info">
+      <h3 class="banner-titulo">
+        Café Microlote
+      </h3>
+      <p class="banner-descricao">
+        Café Microlote - 100% arábica - peso Líq. 200g
+Origem: Carmo de Minas/MG
+Perfil de torra: Clara
+Pontuação: 88
+Variedade: Bourbon Amarelo
       </p>
+      <appButton variant="primary">Comprar</appButton>
+      </div>
     </div>
     <div class="lista-produtos">
       <h2>Em destaque</h2>
@@ -29,11 +36,15 @@ onMounted(() => {
         <Loading v-model:active="store.loading.value" is-full-page />
         <!-- Aqui vão os produtos em destaque -->
         <div v-for="produto in store.produtos" :key="produto.id" class="produto">
+          <div class="imagem-container">
           <img :src="produto.capa.url" :alt="produto.nome" class="imagem-produto" />
-            <h3>{{ produto.nome }}</h3>
+          </div>
+          <div class="desc-item">
+          <h3>{{ produto.nome }}</h3>
             <p class="descricao">{{ produto.descricao }}</p>
             <p class="preco">R$ {{ produto.preco }}</p>
             <appButton variant="primary">Adicionar ao carrinho</appButton>
+          </div>
         </div>
       </div>
     </div>
@@ -91,19 +102,30 @@ main {
   border-radius: 56px;
   color: #fff;
 }
+
 .produto{
   background:#E8B88E;
   padding:20px;
   border-radius:20px;
   display:flex;
   justify-content:center;
+  flex-direction:column;
+  align-items:center;
 }
+
 .produtos{
   margin-top:1vw;
   display:grid;
   grid-template-columns:1fr;
   gap:30px;
+}
 
+.desc-item{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
 }
 
 .preco{
@@ -112,7 +134,7 @@ main {
 }
 
 .imagem-produto {
-  width: 100%;margin-bottom: 30px;
+  width: 100%;
   justify-content: center;
   align-content: center;
   align-items: center;
@@ -135,7 +157,7 @@ main {
     gap:60px;
 }
 .imagem-container{
-    width:50%;
+    width:100%;
 }
 
 .banner-info{

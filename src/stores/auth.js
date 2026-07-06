@@ -30,7 +30,6 @@ export const useAuthStore = defineStore('auth', () => {
         refreshToken.value = null;
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
-        router.push('/login');
     }
 
     async function getUser(){
