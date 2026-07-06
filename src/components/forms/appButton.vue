@@ -24,6 +24,7 @@ defineProps({
 </div>
 </template>
 <style scoped>
+
 .app-button {
     padding: 10px 20px;
     border: none;
@@ -34,6 +35,7 @@ defineProps({
     font-weight: 600;
     border: none;
     cursor: pointer;
+    margin-top: 1vh;
     transition: background-color 0.3s ease opacity 0.2s transform 0.1s;
 }
 .app-button :active{
@@ -55,4 +57,5 @@ defineProps({
     background-color: #e74c3c;
     color: #fff;
 }
+
 </style>
