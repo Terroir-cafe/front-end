@@ -23,12 +23,13 @@
     .footer {
         background-color: #6d423b;
         color: white;
-        border-radius: 15px;
+        border-radius: 15px 15px 0px 0px;
         padding: 25px 20px 20px 20px;
         display: grid;
         grid-template-columns: 1fr auto;
         grid-template-rows: auto auto auto;
         gap: 15px;
+        margin-top: 1vh
     }
 
     .footer-logo {
