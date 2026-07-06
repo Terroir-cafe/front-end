@@ -54,7 +54,7 @@ async function handleRegister(){
             
             <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
             
-            <appButton type="submit" class="btn-confirmar" :disabled="loading">
+            <appButton type="submit" variant="primary" :disabled="loading">
                 {{ loading ? 'Processando...' : 'Confirmar' }}
             </appButton>
         </form>
@@ -137,30 +137,6 @@ async function handleRegister(){
     color: #333333 !important;
     outline: none !important;
     text-align: left !important;
-}
-
-/* --- BOTÃO CONFIRMAR --- */
-.btn-confirmar,
-:deep(.btn-confirmar),
-:deep(.btn-confirmar button) {
-    background-color: #eeeeee !important; 
-    color: #000000 !important;
-    font-weight: 700 !important;
-    font-size: 16px !important;
-    border: none !important;
-    padding: 12px 40px !important;
-    border-radius: 25px !important;
-    cursor: pointer !important;
-    transition: background-color 0.2s !important;
-    margin-top: 15px !important;
-    width: auto !important;
-    display: inline-flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-}
-
-.btn-confirmar:hover {
-    background-color: #e0e0e0 !important;
 }
 
 /* --- TEXTOS INFERIORES --- */

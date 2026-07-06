@@ -29,6 +29,7 @@
         grid-template-columns: 1fr auto;
         grid-template-rows: auto auto auto;
         gap: 15px;
+        margin-top: 1vh
     }
 
     .footer-logo {

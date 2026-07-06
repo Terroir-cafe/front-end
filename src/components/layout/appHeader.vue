@@ -8,6 +8,7 @@ defineProps({
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProdutosStore } from '@/stores/produtos.js'
+import { useAuthStore } from '@/stores/auth.js'
 import { mdiCart, mdiMenu, mdiArrowLeft, mdiAccountCircle } from '@mdi/js'
 import appMenu from './appMenu.vue';
 import SvgIcon from '@jamescoyle/vue-icon'
@@ -15,6 +16,7 @@ import appInput from '../forms/appInput.vue';
 
 const router = useRouter()
 const store = useProdutosStore()
+const authStore = useAuthStore()
 
 const mdiCartIcon = ref(mdiCart)
 const mdiMenuIcon = ref(mdiMenu)
@@ -37,7 +39,7 @@ const mdiAccountIcon = ref(mdiAccountCircle)
       </button>
     </div>
 
-    <div class="nav-logo">
+    <div class="nav-logo" @click="router.push('/')">
       <img src="/Logo.png" alt="Terroir Café" class="logo">
     </div>
 
@@ -45,10 +47,17 @@ const mdiAccountIcon = ref(mdiAccountCircle)
       <appInput placeholder="Buscar produto" class="search-input" />
     </div>
 
-    <div class="nav-user-desktop">
-      <button class="btn-user" @click="router.push('/perfil')">
+    <div class="nav-user-desktop" v-if="authStore.isAuthenticated">
+      <button class="btn-user" @click="router.push('/usuario')">
+        <img :src="authStore.user?.foto.url">
+        <span>{{ authStore.user?.name || 'Usuário' }}</span>
+      </button>
+    </div>
+
+    <div class="nav-user-desktop" v-else>
+      <button class="btn-user" @click="router.push('/login')">
         <SvgIcon type="mdi" :path="mdiAccountIcon" class="user-icon"/>
-        <span>Usuário</span>
+        <span>Entrar</span>
       </button>
     </div>
 
@@ -88,6 +97,7 @@ const mdiAccountIcon = ref(mdiAccountCircle)
     grid-column: 2;
     display: flex;
     justify-content: center;
+    cursor: pointer;
 }
 
 .logo {
@@ -112,6 +122,12 @@ const mdiAccountIcon = ref(mdiAccountCircle)
 /* Remove completamente o bloco de usuário do fluxo mobile */
 .nav-user-desktop {
     display: none;
+}
+
+.nav-user-desktop img{
+    width: 3vw;
+    height: 3vw;
+    border-radius: 50%;
 }
 
 /* Estilização profunda na pílula do input de busca */

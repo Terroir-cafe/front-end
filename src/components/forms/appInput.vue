@@ -2,7 +2,11 @@
 import { computed } from 'vue'
 
 const props = defineProps({
-  label: String,
+  modelValue:{
+    type: [String, Number],
+    default: ''
+  }
+  ,label: String,
   type: {
     type: String,
     default: 'text'
@@ -23,18 +27,18 @@ const value = computed({
     <div class="app-input">
       <label v-if="label" class="label">
         {{ label }} 
-        <span v-if="required">*</span>
+        <span v-if="required" class="required">*</span>
       </label>
         <input 
         v-model="value"
         :type="type"
         :placeholder="placeholder"
+        :required="required"
         class="input"
         >
     </div>
 </template>
 <style scoped>
-@media (max-width: 480px) {
 .label{
   display: block;
   margin-bottom: 4px;
@@ -60,5 +64,5 @@ input:focus{
   border-color: #DDb892;
   outline: none;
 }
-}
+
 </style>

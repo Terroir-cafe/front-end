@@ -40,7 +40,7 @@ async function handleLogin(){
             
             <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
             
-            <appButton type="submit" class="btn-confirmar" :disabled="loading">
+            <appButton type="submit" variant="primary" :disabled="loading">
                 {{ loading ? 'Processando...' : 'Confirmar' }}
             </appButton>
         </form>
@@ -119,48 +119,6 @@ async function handleLogin(){
     font-size: 16px !important;
     color: #333333 !important;
     outline: none !important;
-}
-
-/* --- BOTÃO CONFIRMAR --- */
-/* Remove estilos duplicados de possíveis wrappers do appButton */
-.btn-confirmar {
-    background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
-    margin-top: 15px !important;
-}
-
-:deep(.btn-confirmar button),
-:deep(.btn-confirmar .btn) {
-    background-color: #eeeeee !important; 
-    color: #000000 !important;
-    font-weight: 700 !important;
-    font-size: 16px !important;
-    border: none !important;
-    padding: 14px 50px !important;
-    border-radius: 25px !important;
-    cursor: pointer !important;
-    transition: background-color 0.2s !important;
-    display: inline-flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-}
-
-/* Se o componente injetar direto a tag button sem wrapper */
-button.btn-confirmar {
-    background-color: #eeeeee !important; 
-    color: #000000 !important;
-    font-weight: 700 !important;
-    font-size: 16px !important;
-    border: none !important;
-    padding: 14px 50px !important;
-    border-radius: 25px !important;
-    cursor: pointer !important;
-}
-
-.btn-confirmar:hover :deep(button),
-button.btn-confirmar:hover {
-    background-color: #e0e0e0 !important;
 }
 
 /* --- TEXTOS INFERIORES --- */

@@ -1,6 +1,9 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
+import { useRouter } from 'vue-router';
 import authApi from '../api/authApi';
+
+const router = useRouter();
 
 export const useAuthStore = defineStore('auth', () => {
     const user = ref(null);
@@ -19,6 +22,7 @@ export const useAuthStore = defineStore('auth', () => {
         refreshToken.value = data.refresh;
         localStorage.setItem('access_token', data.access);
         localStorage.setItem('refresh_token', data.refresh);
+        await getUser();
     }
 
     function logout(){
@@ -26,6 +30,7 @@ export const useAuthStore = defineStore('auth', () => {
         refreshToken.value = null;
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
+        router.push('/login');
     }
 
     async function getUser(){
