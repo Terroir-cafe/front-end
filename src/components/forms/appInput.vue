@@ -37,9 +37,11 @@ const value = computed({
       v-model="value"
       :type="type"
       :placeholder="placeholder"
+      :required="required"
       class="input"
     />
   </div>
+
 </template>
 <style scoped>
 .label{
@@ -67,4 +69,5 @@ input:focus{
   border-color: #DDb892;
   outline: none;
 }
+
 </style>
