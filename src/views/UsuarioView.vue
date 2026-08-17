@@ -59,42 +59,93 @@ onMounted(() => {
     </div>
 </template>
 <style scoped>
-@media (max-width: 480px) {
 .main-container {
-    margin-top: 4vh;
+  width: 100%;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
 .user-info-container {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 2vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  background-color: #e8b88e;
+  padding: 30px;
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-.avatar{
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-icon {
+  color: #74403e;
+}
+
+.user-container h2 {
+  color: #74403e;
+  margin: 0 0 8px 0;
+  font-size: 24px;
+}
+
+.user-container p {
+  color: #444444;
+  margin: 0;
+  font-size: 15px;
+}
+
+.actions-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: #ffffff;
+  border: 1px solid #e8b88e;
+  padding: 30px;
+  border-radius: 24px;
+}
+
+.avatar-upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.avatar-upload-form h3 {
+  margin: 0;
+  color: #74403e;
+  font-size: 18px;
+}
+
+.avatar-upload-form input[type="file"] {
+  padding: 10px;
+  border: 1px dashed #74403e;
+  border-radius: 12px;
+  background: #faf8f5;
+  cursor: pointer;
+}
+
+@media (min-width: 640px) {
+  .user-info-container {
+    flex-direction: row;
+    text-align: left;
+  }
+
+  .avatar {
     width: 100px;
     height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-}
-
-@media (min-width: 1024px){
-.main-container {
-    margin-top: 4vh;
-}
-
-.user-info-container {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.avatar{
-    width: 10vw;
-    height: 10vw;
-    border-radius: 50%;
-}
+  }
 }
 </style>

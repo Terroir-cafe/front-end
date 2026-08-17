@@ -25,18 +25,38 @@ const mdiAccountIcon = ref(mdiAccountCircle)
 
 const showBusca = ref(false)
 const busca = ref('');
-let buscaTimer = null;
+const buscaTimer = null;
 
-onMounted(() => {
+async function onBusca() {
     clearTimeout(buscaTimer);
-})
 
-async function onBusca(){
-    clearTimeout(buscaTimer);
+    if (!busca.value.trim()) {
+        showBusca.value = false;
+        return;
+    }
+
     showBusca.value = true;
+
     buscaTimer = setTimeout(() => {
-        store.fetchProdutos(1, busca.value)
+        store.fetchProdutos(1, busca.value.trim());
     }, 400);
+}
+
+function onBuscaEnter() {
+    const texto = busca.value.trim();
+
+    if (!texto) return;
+
+    clearTimeout(buscaTimer);
+
+    showBusca.value = false;
+
+    router.push({
+        path: '/pesquisa',
+        query: {
+            search: texto
+        }
+    });
 }
 
 
@@ -67,6 +87,7 @@ async function onBusca(){
             placeholder="Buscar produtos..."
             v-model="busca"
             @input="onBusca"
+            @keyup.enter="onBuscaEnter"
           />
         </div>
 
