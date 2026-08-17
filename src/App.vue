@@ -1,8 +1,16 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 import appHeader from '@/components/layout/appHeader.vue';
 import appFooter from '@/components/layout/appFooter.vue';
-import { useAuthStore } from '@/stores/auth.js';
+import { onMounted } from 'vue';
+import { useProdutosStore } from '@/stores/produtos.js';
+
+onMounted(() => {
+  const produtosStore = useProdutosStore();
+
+  produtosStore.fetchCategorias();
+  produtosStore.fetchMarcas();
+});
 
 </script>
 

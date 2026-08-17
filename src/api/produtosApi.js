@@ -1,9 +1,8 @@
 import apiClient from "./config";
 
-const produtosApi = {
-    getAll(){
-        return apiClient.get('/produtos/')
-    },
-}
+async function getProdutosApi(page=1, search='', ordering='', marca='', categoria=''){
+    const { data } = await apiClient.get(`/produtos/?page=${page}&search=${search}&ordering=${ordering}&marca__nome=${marca}&categoria__nome=${categoria}`);
+    return data;
+}    
 
-export default produtosApi;
+export default getProdutosApi;

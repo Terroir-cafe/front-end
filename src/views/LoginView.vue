@@ -55,110 +55,122 @@ async function handleLogin(){
 <style scoped>
 /* --- CONTAINER PRINCIPAL --- */
 .signup-container {
-    padding: 60px 40px;
-    width: 100%;
-    max-width: 450px;
-    margin: 40px auto;
-    background-color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-sizing: border-box;
+  padding: 40px 24px;
+  width: 100%;
+  max-width: 460px;
+  margin: 40px auto;
+  background-color: #ffffff;
+  border-radius: 24px;
+  border: 1px solid #e8b88e;
+  box-shadow: 0 8px 24px rgba(116, 64, 62, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 /* --- TOPO / TÍTULO --- */
 .title-wrapper {
-    width: 100%;
-    max-width: 340px;
-    text-align: center;
-    margin-bottom: 50px;
+  width: 100%;
+  max-width: 340px;
+  text-align: center;
+  margin-bottom: 32px;
 }
 
 .signup-title {
-    color: #000000;
-    font-size: 32px;
-    font-weight: 800;
-    margin: 0 0 10px 0;
-    letter-spacing: -0.5px;
+  color: #74403e;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
 }
 
 .title-line {
-    width: 100%;
-    height: 2px;
-    background-color: #000000;
+  width: 100%;
+  height: 3px;
+  background-color: #e8b88e;
+  border-radius: 2px;
 }
 
 /* --- FORMULÁRIO --- */
 .signup-form {
-    width: 100%;
-    max-width: 340px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 25px;
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
 }
 
-/* CORREÇÃO DAS BORDAS DUPLICADAS:
-  Removemos estilos do container do appInput e aplicamos a pílula APENAS na tag input nativa.
-*/
-.custom-input {
-    width: 100% !important;
-    background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
+:deep(.custom-input) {
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
 }
 
 :deep(.custom-input input) {
-    width: 100% !important;
-    box-sizing: border-box !important;
-    height: 52px !important;
-    border-radius: 30px !important; /* Formato pílula perfeito */
-    border: 3px solid #cccccc !important; /* Borda única cinza da imagem */
-    background-color: #ffffff !important;
-    padding: 0 24px !important;
-    font-size: 16px !important;
-    color: #333333 !important;
-    outline: none !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  height: 48px !important;
+  border-radius: 12px !important;
+  border: 1.5px solid #e8b88e !important;
+  background-color: #ffffff !important;
+  padding: 0 18px !important;
+  font-size: 15px !important;
+  color: #333333 !important;
+  outline: none !important;
+  transition: all 0.2s ease !important;
 }
 
-/* --- TEXTOS INFERIORES --- */
+:deep(.custom-input input:focus) {
+  border-color: #74403e !important;
+  box-shadow: 0 0 0 3px rgba(116, 64, 62, 0.15) !important;
+}
+
+/* --- TEXTOS INFERIORES E BOTÕES --- */
 .error-message {
-    color: #ff3333;
-    font-size: 14px;
-    margin: 0;
-    text-align: center;
+  color: #b00020;
+  font-size: 14px;
+  margin: 0;
+  text-align: center;
 }
 
 .login-prompt {
-    text-align: center;
-    font-size: 15px;
-    margin-top: 40px;
+  text-align: center;
+  font-size: 15px;
+  margin-top: 32px;
 }
 
 .login-prompt span {
-    color: #000000;
-    font-weight: 800;
-    display: block;
-    margin-bottom: 8px;
+  color: #555555;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 6px;
 }
 
 .login-link {
-    color: #c49a6c;
-    font-weight: 700;
-    text-decoration: none;
+  color: #74403e;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 .login-link:hover {
-    text-decoration: underline;
+  color: #5b3231;
+  text-decoration: underline;
 }
 
-/* --- DESKTOP --- */
-@media (min-width: 1024px) {
-    .signup-container {
-        max-width: 550px;
-        padding: 80px 60px;
-        border-radius: 40px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
-    }
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 480px) {
+  .signup-container {
+    margin: 20px auto;
+    padding: 30px 16px;
+    border-radius: 16px;
+    box-shadow: none;
+    border: none;
+    background-color: transparent;
+  }
 }
 </style>

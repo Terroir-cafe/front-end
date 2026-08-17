@@ -8,6 +8,7 @@ const store = useProdutosStore()
 
 onMounted(() => {
   store.fetchProdutos()
+  store.fetchCategorias()
   const produtos = reactive({ ...store.produtos })
   console.log(produtos)
 })
@@ -36,6 +37,7 @@ Variedade: Bourbon Amarelo
         <Loading v-model:active="store.loading.value" is-full-page />
         <!-- Aqui vão os produtos em destaque -->
         <div v-for="produto in store.produtos" :key="produto.id" class="produto">
+
           <div class="imagem-container">
           <img :src="produto.capa.url" :alt="produto.nome" class="imagem-produto" />
           </div>
@@ -52,128 +54,169 @@ Variedade: Bourbon Amarelo
 </template>
 <style scoped>
 main {
-  padding-left: 1vw;
-  padding-right: 1vw;
-  margin-top: 4vh;
-  justify-content: center;
-  align-items: center;
-  align-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  box-sizing: border-box;
 }
 
+/* Banner Principal */
 .banner {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  background-color: #E8B88E;
-  padding: 20px;
-  border-radius: 56px;
-  margin-bottom: 30px;
+  gap: 24px;
+  background-color: #e8b88e;
+  padding: 30px;
+  border-radius: 28px;
+  margin-bottom: 40px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .imagem-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  align-content: center;
+  width: 100%;
 }
 
 .banner .imagem-banner {
   width: 100%;
-  height: 400px;
+  height: 350px;
   object-fit: cover;
-  border-radius: 56px;
-  margin: 1vw 0 1vw 0;
-  align-items: center;
-  align-content: center;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+.banner-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.banner-titulo {
+  font-size: 28px;
+  font-weight: 700;
+  color: #74403e;
+  margin: 0;
+}
+
+.banner-descricao {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #333;
+  margin: 0;
+  white-space: pre-line;
+}
+
+/* Lista de Produtos */
 .lista-produtos {
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 }
 
 .lista-produtos h2 {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-top: 10px;
-  padding: 10px;
-  font-size: 24px;
+  padding: 14px 28px;
+  font-size: 22px;
+  font-weight: 600;
   background-color: #74403e;
-  border-radius: 56px;
-  color: #fff;
+  border-radius: 28px;
+  color: #ffffff;
+  margin-bottom: 24px;
 }
 
-.produto{
-  background:#E8B88E;
-  padding:20px;
-  border-radius:20px;
-  display:flex;
-  justify-content:center;
-  flex-direction:column;
-  align-items:center;
+.produtos {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
 }
 
-.produtos{
-  margin-top:1vw;
-  display:grid;
-  grid-template-columns:1fr;
-  gap:30px;
+.produto {
+  background: #ffffff;
+  border: 1px solid #e8b88e;
+  padding: 20px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.desc-item{
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  gap:10px;
-}
-
-.preco{
-  font-size: 18px;
-  font-weight: bold;
+.produto:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(116, 64, 62, 0.12);
 }
 
 .imagem-produto {
   width: 100%;
-  justify-content: center;
-  align-content: center;
-  align-items: center;
-  height: 300px;
-  border-radius: 16px;
+  height: 220px;
+  border-radius: 12px;
   object-fit: contain;
 }
 
+.desc-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+  width: 100%;
+}
+
+.desc-item h3 {
+  font-size: 18px;
+  color: #74403e;
+  margin: 0;
+}
+
+.descricao {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.preco {
+  font-size: 20px;
+  font-weight: 700;
+  color: #74403e;
+  margin: 5px 0;
+}
+
+/* Responsividade */
+@media (min-width: 640px) {
+  .produtos {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 
 @media (min-width: 1024px) {
-  main{
-    max-width:1200px;
-    margin:auto;
-    padding:40px;
-}
-  .banner{
-    flex-direction:row;
-    align-items:center;
-    justify-content:space-between;
-    gap:60px;
-}
-.imagem-container{
-    width:100%;
-}
+  .banner {
+    flex-direction: row;
+    align-items: center;
+  }
 
-.banner-info{
-  width:50%;main{
-  max-width:1200px;
-  margin:auto;
-  padding:40px;
-}
-}
+  .imagem-container {
+    width: 50%;
+  }
 
-.banner .imagem-banner{
-height:500px;
-}
+  .banner-info {
+    width: 50%;
+  }
 
-.produtos{
-  grid-template-columns:repeat(2,1fr);
-}
+  .banner .imagem-banner {
+    height: 400px;
+  }
+
+  .produtos {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 </style>
