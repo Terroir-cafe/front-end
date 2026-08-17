@@ -36,6 +36,7 @@ Variedade: Bourbon Amarelo
         <Loading v-model:active="store.loading.value" is-full-page />
         <!-- Aqui vão os produtos em destaque -->
         <div v-for="produto in store.produtos" :key="produto.id" class="produto">
+
           <div class="imagem-container">
           <img :src="produto.capa.url" :alt="produto.nome" class="imagem-produto" />
           </div>

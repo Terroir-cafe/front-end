@@ -7,13 +7,16 @@ const produtos = ref([]);
 const loading = ref(false);
 const error = ref(null);
 const menuIsOpen = ref(false);
+const currentSearch = ref('');
 
-async function fetchProdutos(){
+async function fetchProdutos(page =1, search = '') {
     loading.value = true;
     error.value = null;
+    currentSearch.value = search
+    produtos.value = [];
     try{
-        const response = await produtosApi.getAll();
-        produtos.value = response.data.results;
+        const data = await produtosApi(page, search);
+        produtos.value = data?.results ?? [];
     } catch (err) {
         error.value = 'Erro ao carregar produtos';
         console.error(err);
@@ -21,6 +24,10 @@ async function fetchProdutos(){
         loading.value = false;
     }
     console.log('Produtos carregados:', produtos.value);
+}
+
+async function search(text){
+    await produtosApi(1, text);
 }
 
 function toggleMenu(){
@@ -34,5 +41,7 @@ return{
     menuIsOpen,
     toggleMenu,
     fetchProdutos,
+    search,
 }
-})
+}
+)
