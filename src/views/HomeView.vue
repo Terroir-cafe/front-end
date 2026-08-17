@@ -31,7 +31,7 @@ onMounted(() => {
         <div v-for="produto in store.produtos" :key="produto.id" class="produto">
           <ul>
             <li>
-              <p class="imagem-produto"><img :src="produto.capa.url" :alt="produto.nome" class="imagem-produto" /></p>
+              <p class="imagem-produto"><img :src="produto?.capa?.url" :alt="produto.nome" class="imagem-produto" /></p>
             </li>
             <li>
               <h3>{{ produto.nome }}</h3>

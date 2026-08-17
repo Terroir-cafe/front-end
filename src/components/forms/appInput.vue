@@ -2,36 +2,44 @@
 import { computed } from 'vue'
 
 const props = defineProps({
+  modelValue: {
+    type: String,
+    default: ''
+  },
   label: String,
   type: {
     type: String,
     default: 'text'
   },
   placeholder: String,
-  required: Boolean,
+  required: Boolean
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'input'])
 
 const value = computed({
-  get: () => props.modelValue,
-  set: (val) => emit('update:modelValue', val)
+  get: () => props.modelValue ?? '',
+  set: (val) => {
+    emit('update:modelValue', val)
+    emit('input', val)
+  }
 })
-
 </script>
+
 <template>
-    <div class="app-input">
-      <label v-if="label" class="label">
-        {{ label }} 
-        <span v-if="required">*</span>
-      </label>
-        <input 
-        v-model="value"
-        :type="type"
-        :placeholder="placeholder"
-        class="input"
-        >
-    </div>
+  <div class="app-input">
+    <label v-if="label" class="label">
+      {{ label }}
+      <span v-if="required">*</span>
+    </label>
+
+    <input
+      v-model="value"
+      :type="type"
+      :placeholder="placeholder"
+      class="input"
+    />
+  </div>
 </template>
 <style scoped>
 .label{
