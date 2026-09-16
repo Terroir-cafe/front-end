@@ -48,6 +48,10 @@ async function limparFiltros() {
     categoria.value = '';
     ordenacao.value = '';
 }
+
+function abrirProduto(produtoId) {
+    router.push({ name: 'Produto', params: { produtoId } });
+}
 </script>
 
 <template>
@@ -130,7 +134,7 @@ async function limparFiltros() {
         </div>
 
         <div v-else class="produtos-grid">
-          <article v-for="produto in store.produtos" :key="produto.id" class="produto-card">
+          <article v-for="produto in store.produtos" :key="produto.id" class="produto-card" @click="abrirProduto(produto.id)">
             <router-link :to="`/produto/${produto.id}`">
               <div class="produto-imagem">
                 <img :src="produto?.capa?.url" :alt="produto.nome" />

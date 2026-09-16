@@ -25,7 +25,7 @@ const mdiAccountIcon = ref(mdiAccountCircle)
 
 const showBusca = ref(false)
 const busca = ref('');
-const buscaTimer = null;
+const buscaTimer = ref(null);
 
 async function onBusca() {
     clearTimeout(buscaTimer);
@@ -59,7 +59,9 @@ function onBuscaEnter() {
     });
 }
 
-
+function abrirProduto(produtoId) {
+    router.push({ name: 'Produto', params: { produtoId } });
+}
 </script>
 
 <template>
@@ -104,10 +106,8 @@ function onBuscaEnter() {
                 />
               </div>
 
-              <div class="resultado-info">
-                <router-link :to="`/produto/${produto.id}`">
+              <div class="resultado-info" @click="abrirProduto(produto.id)">
                   {{ produto.nome }}
-                </router-link>
               </div>
             </li>
           </ul>

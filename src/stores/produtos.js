@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
-import produtosApi from '../api/produtosApi';
+import { getProdutosApi, getProdutoByIdApi } from '../api/produtosApi';
 import getCategoriasApi from '../api/categoriasApi';
 import getMarcasApi from '../api/marcasApi';
 
@@ -12,6 +12,7 @@ export const useProdutosStore = defineStore('produtos', () => {
     const error = ref(null);
     const menuIsOpen = ref(false);
     const currentSearch = ref('');
+    const filmeAtual = ref(null);
 
     async function fetchProdutos(
         page = 1,
@@ -26,7 +27,7 @@ export const useProdutosStore = defineStore('produtos', () => {
         produtos.value = [];
 
         try {
-            const data = await produtosApi(
+            const data = await getProdutosApi(
                 page,
                 search,
                 ordering,
@@ -41,6 +42,12 @@ export const useProdutosStore = defineStore('produtos', () => {
         } finally {
             loading.value = false;
         }
+    }
+
+    async function fetchProdutoById(id){
+        const response = await getProdutoByIdApi(id);
+        return response; 
+        filmeAtual.value = response;
     }
 
     async function search(text) {
@@ -73,6 +80,8 @@ export const useProdutosStore = defineStore('produtos', () => {
         fetchProdutos,
         fetchMarcas,
         fetchCategorias,
-        search
+        search,
+        filmeAtual,
+        fetchProdutoById
     };
 });
