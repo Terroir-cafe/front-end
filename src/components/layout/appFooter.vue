@@ -1,19 +1,24 @@
+<script setup>
+import { mdiCoffee, mdiShieldCheck, mdiInstagram, mdiCopyright } from '@mdi/js'
+import SvgIcon from '@jamescoyle/vue-icon'
+</script>
 <template>
     <div class="footer">
     <div class="footer-logo">
-            <i class="mdi mdi-coffee" style="font-size: 14px; margin-right: 5px;"></i> TerroirCafé
+            <SvgIcon type="mdi" :path="mdiCoffee" class="footer-logo-icon" /> TerroirCafé
         </div>
         <div class="footer-shield">
-            <i class="mdi mdi-shield-alt"></i>
+            <SvgIcon type="mdi" :path="mdiShieldCheck" class="footer-shield-icon" />
         </div>
         <div class="footer-text">
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                Conheça mais dos nossos objetivos e histórias aqui em
+                <RouterLink to="/sobre" class="footer-about">Sobre nós</RouterLink>
         </div>
         <div class="footer-social">
-            <i class="mdi mdi-instagram"></i>
+            <SvgIcon type="mdi" :path="mdiInstagram" class="footer-social-icon" />
         </div>
         <div class="footer-copy">
-            <i class="mdi mdi-copyright"></i>
+            <SvgIcon type="mdi" :path="mdiCopyright" class="footer-copy-icon" />
             <span>all rights<br>Reserved</span>
         </div>
     </div>
@@ -24,9 +29,10 @@
         background-color: #6d423b;
         color: white;
         border-radius: 15px 15px 0px 0px;
+        position: relative;
         padding: 25px 20px 20px 20px;
         display: grid;
-        grid-template-columns: 1fr auto;
+        grid-template-columns: 1fr auto 1fr;
         grid-template-rows: auto auto auto;
         gap: 15px;
         margin-top: 1vh
@@ -44,8 +50,8 @@
     }
 
     .footer-shield {
-        grid-column: 2 / 3;
-        grid-row: 1 / 2;
+        grid-column: 3 / 4;
+        grid-row: 2 / 3;
         text-align: right;
     }
 
@@ -65,13 +71,38 @@
         align-items: flex-end;
     }
 
-    .footer-social i {
-        font-size: 20px;
+    .footer-about {
+        color: white;
+        font-size: 15px;
+        font-weight: 700;
+        text-decoration: underline;
+        text-underline-offset: 4px;
+        transition: color 0.2s ease;
+    }
+
+    .footer-about:hover {
+        color: #e8b88e;
+    }
+
+    .footer-logo-icon {
+        width: 14px;
+        height: 14px;
+        margin-right: 5px;
+    }
+
+    .footer-shield-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .footer-social-icon {
+        width: 20px;
+        height: 20px;
         transition: color 0.3s;
     }
 
     .footer-copy {
-        grid-column: 2 / 3;
+        grid-column: 3 / 4;
         grid-row: 3 / 4;
         text-align: right;
         font-size: 9px;
@@ -80,8 +111,9 @@
         align-items: center;
     }
 
-    .footer-copy i {
-        font-size: 14px;
+    .footer-copy-icon {
+        width: 14px;
+        height: 14px;
         margin-bottom: 3px;
     }
 </style>
