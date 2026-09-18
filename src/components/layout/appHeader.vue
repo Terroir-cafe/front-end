@@ -25,10 +25,10 @@ const mdiAccountIcon = ref(mdiAccountCircle)
 
 const showBusca = ref(false)
 const busca = ref('');
-const buscaTimer = null;
+const buscaTimer = ref(null);
 
 async function onBusca() {
-    clearTimeout(buscaTimer);
+    clearTimeout(buscaTimer.value);
 
     if (!busca.value.trim()) {
         showBusca.value = false;
@@ -37,7 +37,7 @@ async function onBusca() {
 
     showBusca.value = true;
 
-    buscaTimer = setTimeout(() => {
+    buscaTimer.value = setTimeout(() => {
         store.fetchProdutos(1, busca.value.trim());
     }, 400);
 }
@@ -47,7 +47,7 @@ function onBuscaEnter() {
 
     if (!texto) return;
 
-    clearTimeout(buscaTimer);
+    clearTimeout(buscaTimer.value);
 
     showBusca.value = false;
 
