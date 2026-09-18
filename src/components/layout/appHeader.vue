@@ -332,4 +332,9 @@ function onBuscaEnter() {
         flex-shrink: 0;
     }
 }
+@media (max-width: 950px) {
+    .pesquisa-container {
+        display: none;
+    }
+}
 </style>
