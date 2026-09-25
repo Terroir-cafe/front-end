@@ -15,10 +15,10 @@ import SvgIcon from '@jamescoyle/vue-icon'
             <span>Produtos</span>
         </RouterLink>
 
-        <button class="footer-link footer-link-disabled" type="button" disabled aria-label="Carrinho em breve">
+        <RouterLink to="/cart" class="footer-link" active-class="footer-link-active">
             <SvgIcon type="mdi" :path="mdiCartOutline" class="footer-icon" />
             <span>Carrinho</span>
-        </button>
+        </RouterLink>
 
         <RouterLink to="/usuario" class="footer-link" active-class="footer-link-active">
             <SvgIcon type="mdi" :path="mdiAccountCircle" class="footer-icon" />
@@ -83,9 +83,5 @@ import SvgIcon from '@jamescoyle/vue-icon'
         height: 23px;
     }
 
-    .footer-link-disabled {
-        cursor: not-allowed;
-        opacity: 0.58;
-    }
 }
 </style>

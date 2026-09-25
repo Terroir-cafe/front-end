@@ -8,6 +8,7 @@ defineProps({
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProdutosStore } from '@/stores/produtos.js'
+import { useCarrinhoStore } from '@/stores/carrinho.js'
 import { useAuthStore } from '@/stores/auth.js'
 import { mdiCart, mdiMenu, mdiArrowLeft, mdiAccountCircle } from '@mdi/js'
 import appMenu from './appMenu.vue';
@@ -16,6 +17,7 @@ import appInput from '../forms/appInput.vue';
 
 const router = useRouter()
 const store = useProdutosStore()
+const carrinho = useCarrinhoStore()
 const authStore = useAuthStore()
 
 const mdiCartIcon = ref(mdiCart)
@@ -138,6 +140,10 @@ function onBuscaEnter() {
       </div>
 
       <div class="nav-right">
+        <RouterLink to="/cart" class="cart-link" aria-label="Abrir carrinho">
+          <span>Carrinho</span>
+          <span class="cart-count">{{ carrinho.quantidadeTotal }}</span>
+        </RouterLink>
         <button class="icon" v-if="showCart" @click="router.push('/cart')">
           <SvgIcon type="mdi" :path="mdiCartIcon" />
         </button>
@@ -238,6 +244,10 @@ function onBuscaEnter() {
     justify-content: flex-end;
 }
 
+.cart-link {
+  display: none;
+}
+
 .nav-user-desktop {
     display: none;
 }
@@ -330,6 +340,30 @@ function onBuscaEnter() {
 
     .nav-right {
         flex-shrink: 0;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cart-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .cart-count {
+      display: grid;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 5px;
+      place-items: center;
+      border-radius: 11px;
+      background: #e8b88e;
+      color: #442d29;
+      font-size: 12px;
     }
 }
 @media (max-width: 950px) {
