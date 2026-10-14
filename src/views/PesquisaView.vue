@@ -2,9 +2,11 @@
 import { ref, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useProdutosStore } from '@/stores/produtos';
+import { useCarrinhoStore } from '@/stores/carrinho.js';
 
 const route = useRoute();
 const store = useProdutosStore();
+const carrinho = useCarrinhoStore();
 const categoria = ref('');
 const marca = ref('');
 const ordenacao = ref('');
@@ -151,6 +153,9 @@ async function limparFiltros() {
                 </strong>
               </div>
             </router-link>
+            <button class="botao-adicionar" type="button" @click="carrinho.adicionar(produto)">
+              Adicionar ao carrinho
+            </button>
           </article>
         </div>
       </section>
@@ -276,6 +281,8 @@ async function limparFiltros() {
 }
 
 .produto-card {
+  display: flex;
+  flex-direction: column;
   border: 1px solid #e8b88e;
   border-radius: 20px;
   overflow: hidden;
@@ -294,6 +301,7 @@ async function limparFiltros() {
   display: flex;
   flex-direction: column;
   height: 100%;
+  flex: 1;
 }
 
 .produto-imagem {
@@ -341,6 +349,22 @@ async function limparFiltros() {
   font-size: 20px;
   margin-top: auto;
   padding-top: 8px;
+}
+
+.botao-adicionar {
+  min-height: 42px;
+  margin: 0 16px 16px;
+  border: 0;
+  border-radius: 7px;
+  background: #74403e;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.botao-adicionar:hover {
+  background: #5b3231;
 }
 
 .mensagem {
