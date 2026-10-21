@@ -28,7 +28,7 @@ const busca = ref('');
 const buscaTimer = ref(null);
 
 async function onBusca() {
-    clearTimeout(buscaTimer);
+    clearTimeout(buscaTimer.value);
 
     if (!busca.value.trim()) {
         showBusca.value = false;
@@ -37,8 +37,8 @@ async function onBusca() {
 
     showBusca.value = true;
 
-    buscaTimer = setTimeout(() => {
-        store.fetchProdutos(1, busca.value.trim());
+    buscaTimer.value = setTimeout(() => {
+        store.getProdutos(1, busca.value.trim());
     }, 400);
 }
 
@@ -97,7 +97,7 @@ function abrirProduto(produtoId) {
           class="pesquisa"
           v-if="showBusca && busca.trim() && store.produtos.length"
         >
-          <ul v-for="produto in store.produtos" :key="produto.id">
+          <ul v-for="produto in store.produtos" :key="produto.id" class="resultado">
             <li>
               <div class="resultado-imagem">
                 <img
@@ -193,6 +193,10 @@ function abrirProduto(produtoId) {
 
 .pesquisa li:hover {
     background-color: #f5f5f5;
+}
+
+.resultado{
+    cursor: pointer;
 }
 
 .resultado-imagem {

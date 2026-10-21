@@ -12,9 +12,9 @@ export const useProdutosStore = defineStore('produtos', () => {
     const error = ref(null);
     const menuIsOpen = ref(false);
     const currentSearch = ref('');
-    const filmeAtual = ref(null);
+    const produtoAtual = ref([]);
 
-    async function fetchProdutos(
+    async function getProdutos(
         page = 1,
         search = '',
         ordering = '',
@@ -44,26 +44,25 @@ export const useProdutosStore = defineStore('produtos', () => {
         }
     }
 
-    async function fetchProdutoById(id){
-        const response = await getProdutoByIdApi(id);
-        return response; 
-        filmeAtual.value = response;
+    async function getProdutoById(id){
+        const data = await getProdutoByIdApi(id);
+        produtoAtual.value = data;
     }
 
     async function search(text) {
-        await fetchProdutos(1, text);
+        await getProdutos(1, text);
     }
 
     function toggleMenu() {
         menuIsOpen.value = !menuIsOpen.value;
     }
 
-    async function fetchCategorias() {
+    async function getCategorias() {
         const data = await getCategoriasApi();
         categorias.value = data?.results ?? [];
     }
 
-    async function fetchMarcas() {
+    async function getMarcas() {
         const data = await getMarcasApi();
         marcas.value = data?.results ?? [];
     }
@@ -77,11 +76,11 @@ export const useProdutosStore = defineStore('produtos', () => {
         menuIsOpen,
         currentSearch,
         toggleMenu,
-        fetchProdutos,
-        fetchMarcas,
-        fetchCategorias,
+        getProdutos,
+        getMarcas,
+        getCategorias,
         search,
-        filmeAtual,
-        fetchProdutoById
+        produtoAtual,
+        getProdutoById
     };
 });

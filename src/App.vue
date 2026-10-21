@@ -8,8 +8,8 @@ import { useProdutosStore } from '@/stores/produtos.js';
 onMounted(() => {
   const produtosStore = useProdutosStore();
 
-  produtosStore.fetchCategorias();
-  produtosStore.fetchMarcas();
+  produtosStore.getCategorias();
+  produtosStore.getMarcas();
 });
 
 </script>

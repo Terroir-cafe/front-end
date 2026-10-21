@@ -38,34 +38,28 @@ async function handleRegister(){
     }
 }
 </script>
-
 <template>
     <div class="signup-container">
         <div class="title-wrapper">
             <h2 class="signup-title">Cadastre-se</h2>
             <div class="title-line"></div>
         </div>
-
         <form class="signup-form" @submit.prevent="handleRegister">
             <appInput v-model="name" type="text" placeholder="Nome" required class="custom-input" />
             <appInput v-model="email" type="email" placeholder="Email" required class="custom-input" />
             <appInput v-model="password" type="password" placeholder="Senha" required class="custom-input" />
             <appInput v-model="confirmPassword" type="password" placeholder="Confirmar Senha" required class="custom-input" />
-            
             <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-            
             <appButton type="submit" variant="primary" :disabled="loading">
                 {{ loading ? 'Processando...' : 'Confirmar' }}
             </appButton>
         </form>
-
         <div class="login-prompt">
             <span>Já possui uma conta?</span>
             <router-link to="/login" class="login-link">Entrar</router-link>
         </div>
     </div>
 </template>
-
 <style scoped>
 /* --- CONTAINER PRINCIPAL --- */
 .signup-container {

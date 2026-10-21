@@ -13,7 +13,7 @@ function abrirProduto(produtoId){
 };
 
 onMounted(async () => {
-  await store.fetchProdutos()
+  await store.getProdutos()
 })
 </script>
 <template>
