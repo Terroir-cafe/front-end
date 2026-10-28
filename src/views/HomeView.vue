@@ -4,9 +4,11 @@ import { useProdutosStore } from '@/stores/produtos.js';
 import Loading from 'vue-loading-overlay';
 import appButton from '@/components/forms/appButton.vue';
 import { useRouter } from 'vue-router';
+import { useCarrinhoStore } from '@/stores/carrinho.js';
 
-const store = useProdutosStore();
-const router = useRouter();
+const store = useProdutosStore()
+const router = useRouter()
+const carrinho = useCarrinhoStore()
 
 function abrirProduto(produtoId){
   router.push({ name: 'Produto', params: { produtoId } });
@@ -32,7 +34,7 @@ Perfil de torra: Clara
 Pontuação: 88
 Variedade: Bourbon Amarelo
       </p>
-      <appButton variant="primary">Comprar</appButton>
+      <appButton variant="primary" @click="router.push('/pesquisa')">Comprar</appButton>
       </div>
     </div>
     <div class="lista-produtos">
@@ -48,7 +50,7 @@ Variedade: Bourbon Amarelo
           <h3>{{ produto.nome }}</h3>
             <p class="descricao">{{ produto.descricao }}</p>
             <p class="preco">R$ {{ produto.preco }}</p>
-            <appButton variant="primary">Adicionar ao carrinho</appButton>
+            <appButton variant="primary" @click="carrinho.adicionar(produto)">Adicionar ao carrinho</appButton>
           </div>
         </div>
       </div>
