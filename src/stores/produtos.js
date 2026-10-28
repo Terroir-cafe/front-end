@@ -10,7 +10,6 @@ export const useProdutosStore = defineStore('produtos', () => {
     const produtos = ref([]);
     const loading = ref(false);
     const error = ref(null);
-    const menuIsOpen = ref(false);
     const currentSearch = ref('');
     const produtoAtual = ref([]);
 
@@ -73,7 +72,6 @@ export const useProdutosStore = defineStore('produtos', () => {
         marcas,
         loading,
         error,
-        menuIsOpen,
         currentSearch,
         toggleMenu,
         getProdutos,
