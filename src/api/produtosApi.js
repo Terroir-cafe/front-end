@@ -5,4 +5,8 @@ async function getProdutosApi(page=1, search='', ordering='', marca='', categori
     return data;
 }    
 
-export default getProdutosApi;
+async function getProdutoByIdApi(id){
+    const { data } = await apiClient.get(`/produtos/${id}/`);
+    return data;
+}
+export { getProdutosApi, getProdutoByIdApi };

@@ -12,7 +12,7 @@ const marca = ref('');
 const ordenacao = ref('');
 
 async function pesquisar() {
-    await store.fetchProdutos(
+    await store.getProdutos(
         1,
         route.query.search || '',
         ordenacao.value,
@@ -22,8 +22,8 @@ async function pesquisar() {
 }
 
 onMounted(async () => {
-    await store.fetchCategorias();
-    await store.fetchMarcas();
+    await store.getCategorias();
+    await store.getMarcas();
 });
 
 watch(
@@ -39,7 +39,6 @@ watch(
         marca.value = '';
         categoria.value = '';
         ordenacao.value = '';
-
         pesquisar();
     },
     { immediate: true }
@@ -50,31 +49,29 @@ async function limparFiltros() {
     categoria.value = '';
     ordenacao.value = '';
 }
-</script>
 
+function abrirProduto(produtoId) {
+    router.push({ name: 'Produto', params: { produtoId } });
+}
+</script>
 <template>
   <main class="pagina-pesquisa">
     <div class="cabecalho-pesquisa">
       <h1>Resultados da pesquisa</h1>
-
       <p v-if="route.query.search">
         Resultados para:
         <strong>"{{ route.query.search }}"</strong>
       </p>
     </div>
-
     <div class="conteudo">
       <aside class="filtros">
         <h2>Filtrar</h2>
-
         <div class="filtro">
           <label for="marca"> Marca </label>
-
           <select id="marca" v-model="marca">
         <option value="">
             Todas as marcas
         </option>
-
         <option
             v-for="marca in store.marcas"
             :key="marca.id"
@@ -84,69 +81,51 @@ async function limparFiltros() {
         </option>
     </select>
         </div>
-
         <div class="filtro">
           <div class="filtro">
             <label for="categoria"> Categoria </label>
-
             <select id="categoria" v-model="categoria">
               <option value="">Todas as categorias</option>
-
               <option v-for="categoria in store.categorias" :key="categoria.id" :value="categoria.nome">
                 {{ categoria.nome }}
               </option>
             </select>
           </div>
         </div>
-
         <div class="filtro">
           <label for="ordenacao"> Ordenar por </label>
-
           <select id="ordenacao" v-model="ordenacao">
             <option value="">Padrão</option>
-
             <option value="preco">Menor preço</option>
-
             <option value="-preco">Maior preço</option>
-
             <option value="quantidade">Menor quantidade</option>
-
             <option value="-quantidade">Maior quantidade</option>
           </select>
         </div>
-
         <button class="btn-filtrar" @click="pesquisar">Aplicar filtros</button>
-
         <button class="btn-limpar" @click="limparFiltros">Limpar filtros</button>
       </aside>
-
       <section class="resultados">
         <div v-if="store.loading" class="mensagem">Carregando produtos...</div>
-
         <div v-else-if="store.error" class="mensagem erro">
           {{ store.error }}
         </div>
-
         <div v-else-if="store.produtos.length === 0" class="mensagem">
           Nenhum produto encontrado.
         </div>
-
         <div v-else class="produtos-grid">
-          <article v-for="produto in store.produtos" :key="produto.id" class="produto-card">
+          <article v-for="produto in store.produtos" :key="produto.id" class="produto-card" @click="abrirProduto(produto.id)">
             <router-link :to="`/produto/${produto.id}`">
               <div class="produto-imagem">
                 <img :src="produto?.capa?.url" :alt="produto.nome" />
               </div>
-
               <div class="produto-info">
                 <h3>
                   {{ produto.nome }}
                 </h3>
-
                 <p v-if="produto.marca?.nome">
                   {{ produto.marca.nome }}
                 </p>
-
                 <strong>
                   R$
                   {{ Number(produto.preco).toFixed(2) }}
@@ -162,7 +141,6 @@ async function limparFiltros() {
     </div>
   </main>
 </template>
-
 <style scoped>
 .pagina-pesquisa {
   width: 100%;

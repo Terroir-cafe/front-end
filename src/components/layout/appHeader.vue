@@ -11,7 +11,6 @@ import { useProdutosStore } from '@/stores/produtos.js'
 import { useCarrinhoStore } from '@/stores/carrinho.js'
 import { useAuthStore } from '@/stores/auth.js'
 import { mdiCart, mdiMenu, mdiArrowLeft, mdiAccountCircle } from '@mdi/js'
-import appMenu from './appMenu.vue';
 import SvgIcon from '@jamescoyle/vue-icon'
 import appInput from '../forms/appInput.vue';
 
@@ -40,7 +39,7 @@ async function onBusca() {
     showBusca.value = true;
 
     buscaTimer.value = setTimeout(() => {
-        store.fetchProdutos(1, busca.value.trim());
+        store.getProdutos(1, busca.value.trim());
     }, 400);
 }
 
@@ -61,7 +60,9 @@ function onBuscaEnter() {
     });
 }
 
-
+function abrirProduto(produtoId) {
+    router.push({ name: 'Produto', params: { produtoId } });
+}
 </script>
 
 <template>
@@ -97,7 +98,7 @@ function onBuscaEnter() {
           class="pesquisa"
           v-if="showBusca && busca.trim() && store.produtos.length"
         >
-          <ul v-for="produto in store.produtos" :key="produto.id">
+          <ul v-for="produto in store.produtos" :key="produto.id" class="resultado">
             <li>
               <div class="resultado-imagem">
                 <img
@@ -106,10 +107,8 @@ function onBuscaEnter() {
                 />
               </div>
 
-              <div class="resultado-info">
-                <router-link :to="`/produto/${produto.id}`">
+              <div class="resultado-info" @click="abrirProduto(produto.id)">
                   {{ produto.nome }}
-                </router-link>
               </div>
             </li>
           </ul>
@@ -199,6 +198,10 @@ function onBuscaEnter() {
 
 .pesquisa li:hover {
     background-color: #f5f5f5;
+}
+
+.resultado{
+    cursor: pointer;
 }
 
 .resultado-imagem {

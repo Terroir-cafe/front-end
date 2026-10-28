@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive } from 'vue'
+import { onMounted } from 'vue'
 import { useProdutosStore } from '@/stores/produtos.js';
 import Loading from 'vue-loading-overlay';
 import appButton from '@/components/forms/appButton.vue';
@@ -10,15 +10,17 @@ const store = useProdutosStore()
 const router = useRouter()
 const carrinho = useCarrinhoStore()
 
-onMounted(() => {
-  store.fetchProdutos()
-  store.fetchCategorias()
-  const produtos = reactive({ ...store.produtos })
-  console.log(produtos)
+function abrirProduto(produtoId){
+  router.push({ name: 'Produto', params: { produtoId } });
+};
+
+onMounted(async () => {
+  await store.getProdutos()
 })
 </script>
 <template>
   <main class="container">
+    <loading v-model:active="store.loading.value" is-full-page />
     <div class="banner">
       <p class="imagem-container"><img src="/banner.png" :alt="store.produtos.nome" class="imagem-banner" /></p>
       <div class="banner-info">
@@ -40,8 +42,7 @@ Variedade: Bourbon Amarelo
       <div class="produtos">
         <Loading v-model:active="store.loading.value" is-full-page />
         <!-- Aqui vão os produtos em destaque -->
-        <div v-for="produto in store.produtos" :key="produto.id" class="produto">
-
+        <div v-for="produto in store.produtos" :key="produto.id" class="produto" @click="abrirProduto(produto.id)">
           <div class="imagem-container">
           <img :src="produto.capa.url" :alt="produto.nome" class="imagem-produto" />
           </div>
@@ -135,6 +136,7 @@ main {
   display: grid;
   grid-template-columns: 1fr;
   gap: 24px;
+  cursor: pointer;
 }
 
 .produto {

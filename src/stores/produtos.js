@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
-import produtosApi from '../api/produtosApi';
+import { getProdutosApi, getProdutoByIdApi } from '../api/produtosApi';
 import getCategoriasApi from '../api/categoriasApi';
 import getMarcasApi from '../api/marcasApi';
 
@@ -10,10 +10,10 @@ export const useProdutosStore = defineStore('produtos', () => {
     const produtos = ref([]);
     const loading = ref(false);
     const error = ref(null);
-    const menuIsOpen = ref(false);
     const currentSearch = ref('');
+    const produtoAtual = ref([]);
 
-    async function fetchProdutos(
+    async function getProdutos(
         page = 1,
         search = '',
         ordering = '',
@@ -26,7 +26,7 @@ export const useProdutosStore = defineStore('produtos', () => {
         produtos.value = [];
 
         try {
-            const data = await produtosApi(
+            const data = await getProdutosApi(
                 page,
                 search,
                 ordering,
@@ -43,20 +43,25 @@ export const useProdutosStore = defineStore('produtos', () => {
         }
     }
 
+    async function getProdutoById(id){
+        const data = await getProdutoByIdApi(id);
+        produtoAtual.value = data;
+    }
+
     async function search(text) {
-        await fetchProdutos(1, text);
+        await getProdutos(1, text);
     }
 
     function toggleMenu() {
         menuIsOpen.value = !menuIsOpen.value;
     }
 
-    async function fetchCategorias() {
+    async function getCategorias() {
         const data = await getCategoriasApi();
         categorias.value = data?.results ?? [];
     }
 
-    async function fetchMarcas() {
+    async function getMarcas() {
         const data = await getMarcasApi();
         marcas.value = data?.results ?? [];
     }
@@ -67,12 +72,13 @@ export const useProdutosStore = defineStore('produtos', () => {
         marcas,
         loading,
         error,
-        menuIsOpen,
         currentSearch,
         toggleMenu,
-        fetchProdutos,
-        fetchMarcas,
-        fetchCategorias,
-        search
+        getProdutos,
+        getMarcas,
+        getCategorias,
+        search,
+        produtoAtual,
+        getProdutoById
     };
 });

@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '../stores/auth.js';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,7 +27,6 @@ const router = createRouter({
       path: '/usuario',
       name: 'Perfil do Usuário',
       component: () => import('../views/UsuarioView.vue'),
-      meta: { requiresAuth: true },
     },
     {
       path: '/pesquisa',
@@ -36,6 +34,11 @@ const router = createRouter({
       component: () => import('../views/PesquisaView.vue'),
     },
     {
+      path: '/produto/:produtoId',
+      name: 'Produto',
+      component: () => import('../views/ProdutoView.vue'),
+      props: true
+    },
       path: '/cart',
       name: 'Carrinho',
       component: () => import('../views/CarrinhoView.vue'),
@@ -43,11 +46,6 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to) => {
-  const authStore = useAuthStore();
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    return { name: 'login' };
-  }
-});
+
 
 export default router
