@@ -10,15 +10,4 @@ export default {
     getUser(){
         return apiClient.get('/usuarios/me/');
     },
-    patchUser(userId, userData){
-        return apiClient.patch(`/usuarios/${userId}/`, userData);
-    },
-    uploadAvatar(file, description = '') {
-    const formData = new FormData();
-    formData.append('file', file);
-    if (description) formData.append('description', description);
-    return apiClient.post('/media/images/', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-  },
 };

@@ -11,12 +11,26 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
+      workbox: {
+        importScripts: ['push.js'],
+        globPatterns: ['**/*.{js,css,html,ico,png,webmanifest}'],
+        navigateFallbackDenylist: [/^\/api\/|^\/media\//],
+        runtimeCaching: [{
+          urlPattern: ({ request }) => request.destination === 'image',
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'terroir-imagens',
+            cacheableResponse: { statuses: [0, 200] },
+            expiration: { maxEntries: 150, maxAgeSeconds: 30 * 24 * 60 * 60 },
+          },
+        }],
+      },
       manifest: {
         id: 'com.terroir-cafe',
         name: 'Terroir Café',
         short_name: 'Terroir',
         description: 'Aplicativo para explorar os produtos do Terroir Café',
-        theme_color: '#74403e',
+        theme_color: '#6d423b',
         background_color: '#ffffff',
         display: 'standalone',
         scope: '/',
