@@ -1,48 +1,44 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useCarrinhoStore } from '@/stores/carrinho.js';
+import { useAuthStore } from '@/stores/auth.js';
 
 const router = useRouter();
 const carrinho = useCarrinhoStore();
-const cupom = ref('');
-const cupomAplicado = ref(false);
-const mensagemCupom = ref('');
+const authStore = useAuthStore();
 
-const desconto = computed(() => cupomAplicado.value ? carrinho.subtotal * 0.1 : 0);
-const total = computed(() => carrinho.subtotal - desconto.value);
+// sempre que a tela abre, busca o carrinho atualizado no back-end
+onMounted(() => carrinho.carregar());
+
 const formatarPreco = (valor) => new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
 }).format(valor);
 
-function aplicarCupom() {
-    if (cupom.value.trim().toUpperCase() === 'CAFE10') {
-        cupomAplicado.value = true;
-        mensagemCupom.value = 'Cupom CAFE10 aplicado: 10% de desconto.';
-        return;
-    }
+const compraFinalizada = ref(false);
 
-    cupomAplicado.value = false;
-    mensagemCupom.value = 'Cupom inválido.';
-}
-
-function finalizarCompra() {
-    mensagemCupom.value = 'A finalização de pedidos ainda não está disponível.';
+async function finalizarCompra() {
+    compraFinalizada.value = await carrinho.finalizar();
 }
 </script>
 
 <template>
-  <main class="pagina-carrinho">
+  <div class="pagina-carrinho">
     <div class="carrinho-cabecalho">
       <div>
-        <p class="sobretitulo">SUA SELEÇÃO</p>
         <h1>Seu carrinho</h1>
       </div>
       <span class="contador">{{ carrinho.quantidadeTotal }} {{ carrinho.quantidadeTotal === 1 ? 'item' : 'itens' }}</span>
     </div>
 
-    <div v-if="carrinho.itens.length" class="carrinho-layout">
+    <section v-if="compraFinalizada" class="carrinho-vazio">
+      <h2>Compra finalizada!</h2>
+      <p>Obrigado por escolher a Terroir Café.</p>
+      <button class="botao-finalizar" type="button" @click="router.push('/pesquisa')">Continuar comprando</button>
+    </section>
+
+    <div v-else-if="carrinho.itens.length" class="carrinho-layout">
       <section class="lista-itens" aria-label="Produtos no carrinho">
         <article v-for="item in carrinho.itens" :key="item.id" class="item-carrinho">
           <div class="item-imagem">
@@ -54,56 +50,53 @@ function finalizarCompra() {
             <h2>{{ item.nome }}</h2>
             <p class="item-preco">{{ formatarPreco(item.preco) }}</p>
             <div class="controle-quantidade" :aria-label="`Quantidade de ${item.nome}`">
-              <button type="button" :aria-label="`Diminuir quantidade de ${item.nome}`" @click="carrinho.atualizarQuantidade(item.id, item.quantidade - 1)">−</button>
+              <button type="button" :disabled="carrinho.salvando" :aria-label="`Diminuir quantidade de ${item.nome}`" @click="carrinho.atualizarQuantidade(item.id, item.quantidade - 1)">−</button>
               <span>{{ item.quantidade }}</span>
-              <button type="button" :aria-label="`Aumentar quantidade de ${item.nome}`" @click="carrinho.atualizarQuantidade(item.id, item.quantidade + 1)">+</button>
+              <button type="button" :disabled="carrinho.salvando || item.quantidade >= item.estoque" :aria-label="`Aumentar quantidade de ${item.nome}`" @click="carrinho.atualizarQuantidade(item.id, item.quantidade + 1)">+</button>
             </div>
           </div>
 
           <div class="item-final">
             <strong>{{ formatarPreco(item.preco * item.quantidade) }}</strong>
-            <button class="remover-item" type="button" :aria-label="`Remover ${item.nome} do carrinho`" @click="carrinho.remover(item.id)">Remover</button>
+            <button class="remover-item" type="button" :disabled="carrinho.salvando" :aria-label="`Remover ${item.nome} do carrinho`" @click="carrinho.remover(item.id)">Remover</button>
           </div>
         </article>
       </section>
 
       <aside class="resumo-pedido" aria-label="Resumo do pedido">
         <h2>Resumo do pedido</h2>
-        <form class="form-cupom" @submit.prevent="aplicarCupom">
-          <label for="cupom">Inserir cupom</label>
-          <div class="cupom-campo">
-            <input id="cupom" v-model="cupom" placeholder="Código do cupom" :aria-describedby="mensagemCupom ? 'mensagem-cupom' : undefined" />
-            <button type="submit">Aplicar</button>
-          </div>
-          <p v-if="mensagemCupom && !mensagemCupom.includes('finalização')" id="mensagem-cupom" class="mensagem-cupom" role="status">{{ mensagemCupom }}</p>
-        </form>
-
         <div class="linha-resumo">
           <span>Subtotal</span>
           <strong>{{ formatarPreco(carrinho.subtotal) }}</strong>
         </div>
-        <div v-if="desconto" class="linha-resumo desconto">
-          <span>Desconto (10%)</span>
-          <strong>−{{ formatarPreco(desconto) }}</strong>
-        </div>
         <div class="linha-resumo total">
           <span>Total</span>
-          <strong>{{ formatarPreco(total) }}</strong>
+          <strong>{{ formatarPreco(carrinho.subtotal) }}</strong>
         </div>
 
-        <button class="botao-finalizar" type="button" @click="finalizarCompra">Finalizar compra</button>
-        <p v-if="mensagemCupom.includes('finalização')" class="mensagem-finalizacao" role="status">{{ mensagemCupom }}</p>
+        <button class="botao-finalizar" type="button" :disabled="carrinho.salvando" @click="finalizarCompra">
+          {{ carrinho.salvando ? 'Processando...' : 'Finalizar compra' }}
+        </button>
         <button class="botao-continuar" type="button" @click="router.push('/pesquisa')">Continuar comprando</button>
       </aside>
     </div>
 
+    <section v-else-if="carrinho.carregando" class="carrinho-vazio">
+      <p>Carregando seu carrinho…</p>
+    </section>
+
+    <section v-else-if="!authStore.isAuthenticated" class="carrinho-vazio">
+      <h2>Entre na sua conta</h2>
+      <p>Faça login para ver e montar o seu carrinho.</p>
+      <button class="botao-finalizar" type="button" @click="router.push('/login')">Fazer login</button>
+    </section>
+
     <section v-else class="carrinho-vazio">
-      <p class="sobretitulo">PRONTO PARA DESCOBRIR?</p>
       <h2>Seu carrinho está vazio</h2>
       <p>Escolha seus cafés favoritos e eles aparecerão aqui.</p>
       <button class="botao-finalizar" type="button" @click="router.push('/pesquisa')">Explorar cafés</button>
     </section>
-  </main>
+  </div>
 </template>
 
 <style scoped>
@@ -119,27 +112,18 @@ function finalizarCompra() {
   align-items: end;
   justify-content: space-between;
   padding-bottom: 22px;
-  border-bottom: 1px solid #d8d2cb;
-}
-
-.sobretitulo {
-  margin-bottom: 8px;
-  color: #8b5148;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 1.4px;
+  border-bottom: 1px solid var(--line);
 }
 
 h1 {
-  color: #6d423b;
-  font-size: 32px;
+  color: var(--brand);
   line-height: 1.15;
 }
 
 .contador {
   padding: 6px 12px;
   border-radius: 20px;
-  background: #f0ece7;
+  background: var(--surface-accent);
   color: #554b44;
   font-size: 13px;
   font-weight: 700;
@@ -164,7 +148,8 @@ h1 {
   align-items: center;
   gap: 20px;
   padding: 18px;
-  border-radius: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
   background: #e9c69e;
 }
 
@@ -176,7 +161,7 @@ h1 {
   overflow: hidden;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.44);
-  color: #6d423b;
+  color: var(--brand);
   font-size: 22px;
   font-weight: 800;
 }
@@ -222,6 +207,12 @@ h1 {
   background: #d8875e;
 }
 
+.controle-quantidade button:disabled,
+.remover-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .controle-quantidade span {
   min-width: 16px;
   text-align: center;
@@ -248,7 +239,7 @@ h1 {
   padding: 0;
   border: 0;
   background: transparent;
-  color: #6d423b;
+  color: var(--brand);
   font: inherit;
   font-size: 12px;
   font-weight: 700;
@@ -264,55 +255,8 @@ h1 {
 
 .resumo-pedido h2 {
   margin-bottom: 22px;
-  color: #6d423b;
+  color: var(--brand);
   font-size: 20px;
-}
-
-.form-cupom {
-  padding-bottom: 20px;
-  border-bottom: 1px solid #d8d2cb;
-}
-
-.form-cupom label {
-  display: block;
-  margin-bottom: 9px;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.cupom-campo {
-  display: flex;
-  gap: 8px;
-}
-
-.cupom-campo input {
-  min-width: 0;
-  flex: 1;
-  height: 40px;
-  padding: 0 11px;
-  border: 1px solid #cfc7bf;
-  border-radius: 6px;
-  font: inherit;
-  font-size: 13px;
-}
-
-.cupom-campo button {
-  padding: 0 13px;
-  border: 1px solid #6d423b;
-  border-radius: 6px;
-  background: white;
-  color: #6d423b;
-  font: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.mensagem-cupom,
-.mensagem-finalizacao {
-  margin-top: 8px;
-  color: #6d423b;
-  font-size: 12px;
 }
 
 .linha-resumo {
@@ -323,14 +267,10 @@ h1 {
   font-size: 14px;
 }
 
-.desconto strong {
-  color: #3f7351;
-}
-
 .linha-resumo.total {
   margin-top: 18px;
   padding: 18px 0;
-  border-top: 1px solid #d8d2cb;
+  border-top: 1px solid var(--line);
   font-size: 17px;
 }
 
@@ -338,7 +278,7 @@ h1 {
 .botao-continuar {
   width: 100%;
   min-height: 46px;
-  border-radius: 7px;
+  border-radius: 999px;
   font: inherit;
   font-size: 14px;
   font-weight: 700;
@@ -347,7 +287,7 @@ h1 {
 
 .botao-finalizar {
   border: 0;
-  background: #74403e;
+  background: var(--brand);
   color: white;
 }
 
@@ -355,9 +295,14 @@ h1 {
   background: #5e3432;
 }
 
+.botao-finalizar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .botao-continuar {
   margin-top: 10px;
-  border: 1px solid #d8d2cb;
+  border: 1px solid var(--line);
   background: white;
   color: #403933;
 }
@@ -373,7 +318,7 @@ h1 {
 
 .carrinho-vazio h2 {
   margin-bottom: 8px;
-  color: #6d423b;
+  color: var(--brand);
   font-size: 25px;
 }
 
@@ -428,7 +373,7 @@ h1 {
   .resumo-pedido {
     position: static;
     padding-top: 21px;
-    border-top: 1px solid #d8d2cb;
+    border-top: 1px solid var(--line);
   }
 }
 

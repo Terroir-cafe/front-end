@@ -2,7 +2,22 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(to, _from, savedPosition) {
+    return savedPosition ?? (to.hash ? { el: to.hash } : { top: 0 })
+  },
   routes: [
+    {
+      path: '/notificacoes',
+      name: 'Notificações',
+      component: () => import('../views/NotificacoesView.vue'),
+      meta: { requerLogin: true },
+    },
+    {
+      path: '/favoritos',
+      name: 'Favoritos',
+      component: () => import('../views/FavoritosView.vue'),
+      meta: { requerLogin: true },
+    },
     {
       path: '/',
       name: 'Página Inicial',
@@ -26,6 +41,7 @@ const router = createRouter({
     {
       path: '/usuario',
       name: 'Perfil do Usuário',
+      meta: { requerLogin: true },
       component: () => import('../views/UsuarioView.vue'),
     },
     {
@@ -37,7 +53,7 @@ const router = createRouter({
       path: '/produto/:produtoId',
       name: 'Produto',
       component: () => import('../views/ProdutoView.vue'),
-      props: true
+      props: (route) => ({ produtoId: Number(route.params.produtoId) })
     },
     {
       path: '/cart',
@@ -48,5 +64,11 @@ const router = createRouter({
 })
 
 
+
+router.beforeEach((to) => {
+  if (to.meta.requerLogin && !localStorage.getItem('access_token')) {
+    return { path: '/login', query: { retorno: to.fullPath } }
+  }
+})
 
 export default router

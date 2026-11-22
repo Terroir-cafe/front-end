@@ -12,6 +12,7 @@ export const useProdutosStore = defineStore('produtos', () => {
     const error = ref(null);
     const currentSearch = ref('');
     const produtoAtual = ref([]);
+    let ultimaConsulta = 0;
 
     async function getProdutos(
         page = 1,
@@ -20,6 +21,7 @@ export const useProdutosStore = defineStore('produtos', () => {
         marca = '',
         categoria = ''
     ) {
+        const consulta = ++ultimaConsulta;
         loading.value = true;
         error.value = null;
         currentSearch.value = search;
@@ -34,12 +36,12 @@ export const useProdutosStore = defineStore('produtos', () => {
                 categoria
             );
 
-            produtos.value = data?.results ?? [];
+            if (consulta === ultimaConsulta) produtos.value = data?.results ?? [];
         } catch (err) {
-            error.value = 'Erro ao carregar produtos';
+            if (consulta === ultimaConsulta) error.value = 'Erro ao carregar produtos';
             console.error(err);
         } finally {
-            loading.value = false;
+            if (consulta === ultimaConsulta) loading.value = false;
         }
     }
 

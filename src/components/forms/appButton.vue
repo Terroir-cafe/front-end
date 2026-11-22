@@ -2,60 +2,35 @@
 defineProps({
     type: {
         type: String,
-        default: 'primary'
+        default: 'button'
     },
     variant: {
         type: String,
-        default: 'default'
+        default: 'primary'
     },
     disabled: Boolean
 })
 </script>
 <template>
-<div>
-    <button 
-    class="app-button"
-    :type="type"
-    :disabled="disabled"
-    :class="['app-button', `variant-${variant}`]"
-    >
-        <slot></slot>
-    </button>
-</div>
+  <button class="botao app-button" :type="type" :disabled="disabled" :class="`variant-${variant}`">
+    <slot />
+  </button>
 </template>
 <style scoped>
-
-.app-button {
-    padding: 10px 20px;
-    border: none;
-    min-height: 48px;
-    border-radius: 56px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    margin-top: 1vh;
-    transition: background-color 0.3s ease opacity 0.2s transform 0.1s;
-}
-.app-button :active{
-    transform: scale(0.98)
-}
-.app-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-.variant-primary {
-    background-color: #74403e;
-    color: #fff;
-}
 .variant-secondary {
-    background-color: #fff;
-    color: #74403e;
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--brand);
+}
+.variant-secondary:hover {
+  background: var(--surface-accent);
 }
 .variant-danger {
-    background-color: #e74c3c;
-    color: #fff;
+  background: var(--surface);
+  border-color: var(--line);
+  color: #922d27;
 }
-
+.variant-danger:hover {
+  background: #fff1ef;
+}
 </style>

@@ -11,12 +11,13 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
+      workbox: { importScripts: ['push.js'] },
       manifest: {
         id: 'com.terroir-cafe',
         name: 'Terroir Café',
         short_name: 'Terroir',
         description: 'Aplicativo para explorar os produtos do Terroir Café',
-        theme_color: '#74403e',
+        theme_color: '#6d423b',
         background_color: '#ffffff',
         display: 'standalone',
         scope: '/',
