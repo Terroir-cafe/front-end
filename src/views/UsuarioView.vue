@@ -2,7 +2,6 @@
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.js';
-import { desativarPush } from '@/api/pushApi'
 import HistoricoCompras from '@/components/conta/HistoricoCompras.vue'
 import appButton from '@/components/forms/appButton.vue'
 import { mdiAccountCircle } from '@mdi/js'
@@ -46,12 +45,10 @@ const saindo = ref(false)
 async function handleLogout() {
     saindo.value = true
     try {
-        await desativarPush()
-    } catch {
-        // A sessão local ainda deve ser encerrada se o servidor estiver indisponível.
+        await authStore.logout()
+        await router.push('/login')
     } finally {
-        authStore.logout()
-        router.push('/login')
+        saindo.value = false
     }
 }
 

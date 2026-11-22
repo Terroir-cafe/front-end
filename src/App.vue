@@ -1,8 +1,9 @@
 <script setup>
-import { RouterView } from 'vue-router'
+import { RouterView, useRoute } from 'vue-router'
 import appHeader from '@/components/layout/appHeader.vue';
 import appFooter from '@/components/layout/appFooter.vue';
 import appFooterMobile from '@/components/layout/appFooterMobile.vue';
+import AlertasNoDispositivo from '@/components/conta/AlertasNoDispositivo.vue';
 import { onMounted, onUnmounted, watch } from 'vue';
 import { useProdutosStore } from '@/stores/produtos.js';
 import { useAuthStore } from '@/stores/auth.js';
@@ -14,7 +15,14 @@ import { conectado, erroSincronizacao, observarConexao, pendencias, sincronizand
 const authStore = useAuthStore();
 const carrinho = useCarrinhoStore();
 const notificacoes = useNotificacoesStore();
+const rota = useRoute();
 let pararObservacao;
+
+function receberPush(evento) {
+  if (!authStore.isAuthenticated || evento.data?.type !== 'notificacao-recebida') return;
+  notificacoes.receberPush();
+  if (['carrinho', 'compra'].includes(evento.data.tipo)) void carrinho.carregar();
+}
 
 function atualizarConta() {
   if (!authStore.isAuthenticated) return;
@@ -30,13 +38,17 @@ function prepararConsultasOffline() {
 
 onMounted(() => {
   pararObservacao = observarConexao();
+  navigator.serviceWorker?.addEventListener('message', receberPush);
   const produtosStore = useProdutosStore();
 
   void produtosStore.getCategorias().catch(() => {});
   void produtosStore.getMarcas().catch(() => {});
 });
 
-onUnmounted(() => pararObservacao?.());
+onUnmounted(() => {
+  pararObservacao?.();
+  navigator.serviceWorker?.removeEventListener('message', receberPush);
+});
 
 watch(() => authStore.conta, () => {
   carrinho.limpar();
@@ -71,6 +83,8 @@ watch(
   <div class="layout">
 
     <appHeader />
+    <AlertasNoDispositivo v-if="authStore.isAuthenticated && rota.path !== '/notificacoes'"
+      :key="authStore.conta" convite />
 
     <p v-if="!conectado || pendencias.length" class="aviso-offline" role="status">
       <template v-if="!conectado">Sem conexão. Você pode consultar os dados já salvos neste dispositivo.</template>
