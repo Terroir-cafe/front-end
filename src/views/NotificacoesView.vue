@@ -36,7 +36,8 @@ async function marcarComoLida(item) {
     <h1>Notificações</h1>
     <AlertasNoDispositivo />
     <p v-if="erro" role="alert">{{ erro }}</p>
-    <ListaDaConta :carregar="listarNotificacoes" vazio="Você ainda não tem notificações.">
+    <ListaDaConta :carregar="listarNotificacoes" :revisao="notificacoes.revisao"
+      vazio="Você ainda não tem notificações.">
       <template #default="{ itens }">
         <ul class="conta-lista">
           <li v-for="item in itens" :key="item.id" class="conta-card" :class="{ 'nao-lida': !item.lida_em }">

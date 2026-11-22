@@ -5,6 +5,7 @@ const baseURL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000/api/
 const apiClient = axios.create({ baseURL, timeout: 12000 })
 const publico = /^\/(produtos|categorias|marcas)\//
 const privado = /^\/(compras\/carrinho\/|usuarios\/(me\/|favoritos\/|historico_compras\/|notificacoes\/|push\/))/
+const alteraCompra = /^\/(compras\/|usuarios\/sincronizar\/)/
 let renovacao
 
 function escopoConsulta(config) {
@@ -16,16 +17,24 @@ function escopoConsulta(config) {
   return chaveConsulta(escopo, '/' + uri.slice(apiClient.getUri({ url: '/' }).length))
 }
 
-apiClient.interceptors.request.use((config) => {
+apiClient.interceptors.request.use(async (config) => {
   const conta = contaAtual()
   if (config.contaEsperada && config.contaEsperada !== conta) {
     throw new axios.CanceledError('A conta mudou.')
   }
   config.contaOrigem = conta
   config.cacheLocal = escopoConsulta(config)
+  if (!navigator.onLine) throw new axios.AxiosError('Sem conexão.', 'ERR_OFFLINE', config)
+  if (conta && ['post', 'put', 'patch'].includes(config.method) && alteraCompra.test(config.url)) {
+    const assinatura = await navigator.serviceWorker?.getRegistration()
+      .then((registro) => registro?.pushManager?.getSubscription())
+      .catch(() => null)
+    if (conta !== contaAtual()) throw new axios.CanceledError('A conta mudou.')
+    if (assinatura) config.headers['X-Push-Endpoint'] = assinatura.endpoint
+    else config.headers.delete('X-Push-Endpoint')
+  }
   const token = localStorage.getItem('access_token')
   if (token) config.headers.Authorization = `Bearer ${token}`
-  if (!navigator.onLine) throw new axios.AxiosError('Sem conexão.', 'ERR_OFFLINE', config)
   return config
 })
 

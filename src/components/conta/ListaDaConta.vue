@@ -5,6 +5,7 @@ import { versao } from '@/offline/sincronizacao'
 const props = defineProps({
   carregar: { type: Function, required: true },
   vazio: { type: String, required: true },
+  revisao: { type: Number, default: 0 },
 })
 
 const itens = ref([])
@@ -38,6 +39,7 @@ function remover(id) {
 
 onMounted(() => abrir())
 watch(versao, () => abrir())
+watch(() => props.revisao, () => abrir())
 </script>
 
 <template>

@@ -6,6 +6,7 @@ import { useAuthStore } from './auth'
 export const useNotificacoesStore = defineStore('notificacoes', () => {
   const auth = useAuthStore()
   const naoLidas = ref(0)
+  const revisao = ref(0)
   let requisicao = 0
 
   async function atualizar() {
@@ -25,5 +26,10 @@ export const useNotificacoesStore = defineStore('notificacoes', () => {
 
   watch(() => auth.accessToken, atualizar, { immediate: true })
 
-  return { naoLidas, atualizar }
+  function receberPush() {
+    revisao.value++
+    void atualizar()
+  }
+
+  return { naoLidas, revisao, atualizar, receberPush }
 })

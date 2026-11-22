@@ -2,7 +2,8 @@ import { computed, ref, watch } from 'vue';
 import { defineStore } from 'pinia';
 import authApi from '../api/authApi';
 import { chaveConsulta, contaAtual, lerConsulta } from '@/offline/banco';
-import { aplicarConta, enfileirar, pendencias } from '@/offline/sincronizacao';
+import { aplicarConta, conectado, enfileirar, pendencias } from '@/offline/sincronizacao';
+import { usePushNotifications } from '@/composables/usePushNotifications';
 
 
 export const useAuthStore = defineStore('auth', () => {
@@ -25,6 +26,10 @@ export const useAuthStore = defineStore('auth', () => {
 
     const conta = computed(() => contaAtual(accessToken.value));
     const isAuthenticated = computed(() => conta.value !== null);
+    const push = usePushNotifications();
+    watch([conta, conectado], ([id, online]) => {
+        if (id && online) push.restaurar(id);
+    }, { immediate: true });
 
     window.addEventListener('storage', (evento) => {
         if (evento.key !== 'access_token' && evento.key !== null) return;
@@ -40,6 +45,11 @@ export const useAuthStore = defineStore('auth', () => {
 
     async function login(email, password){
         const { data } = await authApi.login(email, password);
+        const anterior = conta.value;
+        if (anterior && anterior !== contaAtual(data.access)) {
+            await push.desativar(anterior, { sair: true }).catch(() => {});
+            usuarioServidor.value = null;
+        }
         localStorage.setItem('refresh_token', data.refresh);
         localStorage.setItem('access_token', data.access);
         accessToken.value = data.access;
@@ -47,7 +57,10 @@ export const useAuthStore = defineStore('auth', () => {
         await getUser().catch(() => {});
     }
 
-    function logout(){
+    async function logout(){
+        const id = conta.value;
+        await push.desativar(id, { sair: true }).catch(() => {});
+        if (id !== conta.value) return;
         usuarioServidor.value = null;
         accessToken.value = null;
         refreshToken.value = null;
