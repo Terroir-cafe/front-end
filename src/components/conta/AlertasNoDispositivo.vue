@@ -21,12 +21,14 @@ const bloqueado = ref(suportaPush && Notification.permission === 'denied')
 const erro = ref('')
 let consultarNovamente = false
 const descricao = computed(() => {
+  if (!window.isSecureContext) return 'Abra o Terroir por HTTPS para ativar os alertas neste dispositivo.'
   if (!suportaPush) return 'Use um navegador compatível. No iPhone, abra o site pelo ícone adicionado à Tela de Início.'
   if (bloqueado.value) return 'Libere as notificações deste site nos ajustes do navegador ou do dispositivo.'
   if (ocupado.value) return 'Atualizando preferência…'
   if (ativo.value) return 'Os alertas estão ativados neste dispositivo.'
   if (!conectado.value) return 'Conecte-se para ativar os alertas neste dispositivo.'
-  if (!chave.value) return 'O envio para este dispositivo está indisponível.'
+  if (!chave.value && !erro.value) return 'O servidor ainda não disponibilizou o envio de alertas.'
+  if (!chave.value) return ''
   return 'Receba alertas de compras, carrinho e favoritos mesmo com o site fechado.'
 })
 
@@ -91,7 +93,7 @@ watch([versao, conectado, push.revisaoPush], consultar)
     <div class="alertas-icone" aria-hidden="true"><SvgIcon type="mdi" :path="mdiBellRingOutline" /></div>
     <div class="alertas-texto">
       <h2>Alertas neste dispositivo</h2>
-      <p aria-live="polite">{{ descricao }}</p>
+      <p v-if="descricao" aria-live="polite">{{ descricao }}</p>
       <p v-if="erro" role="alert">{{ erro }}</p>
     </div>
     <button v-if="suportaPush && (chave || ativo) && (!bloqueado || ativo)" type="button" class="conta-button"
