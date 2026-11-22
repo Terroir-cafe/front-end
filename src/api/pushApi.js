@@ -1,4 +1,5 @@
 import apiClient from './config'
+import { aplicarLista, enfileirar, sincronizar } from '@/offline/sincronizacao'
 
 export const suportaPush = window.isSecureContext
   && 'serviceWorker' in navigator
@@ -19,10 +20,11 @@ export async function obterAssinatura() {
 export async function consultarPush(assinatura) {
   const dispositivo = assinatura ? await identificador(assinatura) : undefined
   const { data } = await apiClient.get('/usuarios/push/', { params: { dispositivo }, timeout: 8000 })
-  return data
+  return aplicarLista(`/usuarios/push/?dispositivo=${dispositivo ?? ''}`, data)
 }
 
 export async function ativarPush(chave) {
+  await sincronizar()
   const registro = await navigator.serviceWorker.getRegistration()
   if (!registro?.active) throw new Error('Service worker indisponível')
 
@@ -42,14 +44,20 @@ export async function ativarPush(chave) {
   }
 }
 
-export async function desativarPush() {
+export async function desativarPush({ salvarDepois = false } = {}) {
   if (!suportaPush) return
   const assinatura = await obterAssinatura()
   if (!assinatura) return
 
+  const dispositivo = await identificador(assinatura)
+  if (salvarDepois) {
+    await enfileirar('desativar_push', { dispositivo })
+    return
+  }
+
   try {
     await apiClient.delete('/usuarios/push/', {
-      data: { dispositivo: await identificador(assinatura) },
+      data: { dispositivo },
       timeout: 3500,
     })
   } finally {

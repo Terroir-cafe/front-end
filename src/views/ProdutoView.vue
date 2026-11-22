@@ -13,6 +13,7 @@ import { salvarFavorito } from '@/api/contaApi'
 import { getProdutoByIdApi, getProdutosApi } from '@/api/produtosApi'
 import { useAuthStore } from '@/stores/auth'
 import { useCarrinhoStore } from '@/stores/carrinho'
+import { pendencias } from '@/offline/sincronizacao'
 
 const props = defineProps({ produtoId: { type: Number, required: true } })
 const router = useRouter()
@@ -28,7 +29,9 @@ const erroFavorito = ref('')
 const modulosCarrossel = [Navigation, A11y]
 const colunasCarrossel = { 520: { slidesPerView: 2 }, 820: { slidesPerView: 3 }, 1100: { slidesPerView: 4 } }
 
-const favoritado = computed(() => auth.user?.favoritos.some((item) => item.id === props.produtoId) ?? false)
+const favoritado = computed(() => auth.user?.favoritos.some((item) => item.id === props.produtoId)
+  ?? pendencias.value.findLast((op) => op.tipo === 'favorito' && op.produto === props.produtoId)?.favorito
+  ?? false)
 
 watch(() => props.produtoId, async (id, _anterior, cancelar) => {
   let atual = true
@@ -77,23 +80,13 @@ async function alternarFavorito() {
     router.push('/login')
     return
   }
-  if (!auth.user) {
-    await carregarFavoritos()
-    if (!auth.user) return
-  }
   const selecionado = produto.value
   if (!selecionado) return
   const adicionar = !favoritado.value
-  const usuario = auth.user
   salvandoFavorito.value = true
   erroFavorito.value = ''
   try {
-    await salvarFavorito(selecionado.id, adicionar)
-    if (auth.user === usuario) {
-      usuario.favoritos = adicionar
-        ? [...usuario.favoritos, selecionado]
-        : usuario.favoritos.filter((item) => item.id !== selecionado.id)
-    }
+    await salvarFavorito(selecionado.id, adicionar, selecionado)
   } catch {
     erroFavorito.value = 'Não foi possível atualizar seus favoritos. Tente novamente.'
   } finally {

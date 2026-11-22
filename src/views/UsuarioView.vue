@@ -16,12 +16,17 @@ const mdiAccountIcon = ref(mdiAccountCircle)
 
 function handleFileChange(event) {
     selectedFile.value = event.target.files[0];
+    erroAvatar.value = '';
 };
 
 const erroAvatar = ref('')
 
 async function handleImageUpload(event) {
     if (!selectedFile.value || isLoading.value) return
+    if (!['image/jpeg', 'image/png'].includes(selectedFile.value.type)) {
+        erroAvatar.value = 'Selecione uma foto JPEG ou PNG.'
+        return
+    }
     const form = event.currentTarget
     isLoading.value = true
     erroAvatar.value = ''
@@ -51,7 +56,7 @@ async function handleLogout() {
 }
 
 onMounted(() => {
-    authStore.getUser();
+    void authStore.getUser().catch(() => {});
 });
 </script>
 <template>
@@ -77,7 +82,7 @@ onMounted(() => {
         <div class="actions-container">
             <form @submit.prevent="handleImageUpload" class="avatar-upload-form">
                 <h2>Atualizar foto do perfil</h2>
-                <input type="file" accept="image/*" aria-label="Selecionar foto do perfil" @change="handleFileChange" />
+                <input type="file" accept="image/jpeg,image/png" aria-label="Selecionar foto do perfil" @change="handleFileChange" />
                 <p v-if="erroAvatar" class="error-message" role="alert">{{ erroAvatar }}</p>
                 <appButton type="submit" variant="primary" :disabled="isLoading || !selectedFile">
                     {{ isLoading ? 'Enviando...' : 'Enviar' }}

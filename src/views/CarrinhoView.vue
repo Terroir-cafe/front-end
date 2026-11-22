@@ -74,9 +74,11 @@ async function finalizarCompra() {
           <strong>{{ formatarPreco(carrinho.subtotal) }}</strong>
         </div>
 
-        <button class="botao-finalizar" type="button" :disabled="carrinho.salvando" @click="finalizarCompra">
+        <button class="botao-finalizar" type="button" :disabled="carrinho.salvando || carrinho.pendente || !carrinho.conectado" @click="finalizarCompra">
           {{ carrinho.salvando ? 'Processando...' : 'Finalizar compra' }}
         </button>
+        <p v-if="!carrinho.conectado" class="aviso-finalizacao">Conecte-se para finalizar a compra.</p>
+        <p v-else-if="carrinho.pendente" class="aviso-finalizacao">Aguardando a sincronização do carrinho.</p>
         <button class="botao-continuar" type="button" @click="router.push('/pesquisa')">Continuar comprando</button>
       </aside>
     </div>
@@ -397,5 +399,10 @@ h1 {
   .item-final strong {
     font-size: 12px;
   }
+}
+.aviso-finalizacao {
+  margin-block: 8px;
+  color: var(--muted);
+  font-size: .875rem;
 }
 </style>

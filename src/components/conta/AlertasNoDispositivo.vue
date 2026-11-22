@@ -1,8 +1,10 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { mdiBellRingOutline } from '@mdi/js'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { ativarPush, consultarPush, desativarPush, obterAssinatura, suportaPush } from '@/api/pushApi'
+
+import { conectado, pendencias, versao } from '@/offline/sincronizacao'
 
 const chave = ref('')
 const ativo = ref(false)
@@ -14,6 +16,7 @@ const descricao = computed(() => {
   if (bloqueado.value) return 'Libere as notificações deste site nos ajustes do navegador ou do dispositivo.'
   if (ocupado.value) return 'Atualizando preferência…'
   if (ativo.value) return 'Os alertas estão ativados neste dispositivo.'
+  if (!conectado.value) return 'Conecte-se para ativar os alertas neste dispositivo.'
   if (!chave.value) return 'O envio para este dispositivo está indisponível.'
   return 'Receba alertas de compras, carrinho e favoritos mesmo com o site fechado.'
 })
@@ -38,7 +41,7 @@ async function alternar() {
   erro.value = ''
   try {
     if (ativo.value) {
-      await desativarPush()
+      await desativarPush({ salvarDepois: true })
       ativo.value = false
     } else {
       const permissao = await Notification.requestPermission()
@@ -56,6 +59,7 @@ async function alternar() {
 }
 
 onMounted(consultar)
+watch(versao, consultar)
 </script>
 
 <template>
@@ -67,7 +71,7 @@ onMounted(consultar)
       <p v-if="erro" role="alert">{{ erro }}</p>
     </div>
     <button v-if="suportaPush && (chave || ativo) && (!bloqueado || ativo)" type="button" class="conta-button"
-      :disabled="ocupado" @click="alternar">
+      :disabled="ocupado || (!ativo && (!conectado || pendencias.some((op) => op.tipo === 'desativar_push')))" @click="alternar">
       {{ ativo ? 'Desativar alertas' : 'Ativar alertas' }}
     </button>
     <button v-else-if="erro" type="button" class="conta-button" @click="consultar">Tentar novamente</button>

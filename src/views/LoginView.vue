@@ -15,6 +15,10 @@ const loading = ref(false);
 const errorMessage = ref('');
 
 async function handleLogin(){
+    if (!navigator.onLine) {
+        errorMessage.value = 'Conecte-se para entrar na sua conta.';
+        return;
+    }
     loading.value = true;
     errorMessage.value = '';
     try{

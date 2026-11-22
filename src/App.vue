@@ -3,28 +3,56 @@ import { RouterView } from 'vue-router'
 import appHeader from '@/components/layout/appHeader.vue';
 import appFooter from '@/components/layout/appFooter.vue';
 import appFooterMobile from '@/components/layout/appFooterMobile.vue';
-import { onMounted, watch } from 'vue';
+import { onMounted, onUnmounted, watch } from 'vue';
 import { useProdutosStore } from '@/stores/produtos.js';
 import { useAuthStore } from '@/stores/auth.js';
 import { useCarrinhoStore } from '@/stores/carrinho.js';
+import { listarCompras, listarFavoritos, listarNotificacoes } from '@/api/contaApi';
+import { useNotificacoesStore } from '@/stores/notificacoes';
+import { conectado, erroSincronizacao, observarConexao, pendencias, sincronizando, trocarConta, versao } from '@/offline/sincronizacao';
 
 const authStore = useAuthStore();
 const carrinho = useCarrinhoStore();
+const notificacoes = useNotificacoesStore();
+let pararObservacao;
+
+function atualizarConta() {
+  if (!authStore.isAuthenticated) return;
+  void authStore.getUser().catch(() => {});
+  void carrinho.carregar();
+  void notificacoes.atualizar();
+}
+
+function prepararConsultasOffline() {
+  if (!authStore.isAuthenticated || !navigator.onLine) return;
+  void Promise.allSettled([listarCompras(1), listarFavoritos(1), listarNotificacoes(1)]);
+}
 
 onMounted(() => {
+  pararObservacao = observarConexao();
   const produtosStore = useProdutosStore();
 
-  produtosStore.getCategorias();
-  produtosStore.getMarcas();
+  void produtosStore.getCategorias().catch(() => {});
+  void produtosStore.getMarcas().catch(() => {});
 });
 
-// Lê o carrinho do back-end ao abrir o site e ao fazer login;
-// zera o carrinho local ao fazer logout.
-watch(
-  () => authStore.isAuthenticated,
-  (logado) => (logado ? carrinho.carregar() : carrinho.limpar()),
-  { immediate: true }
-);
+onUnmounted(() => pararObservacao?.());
+
+watch(() => authStore.conta, () => {
+  carrinho.limpar();
+  void trocarConta().then(() => {
+    atualizarConta();
+    prepararConsultasOffline();
+  });
+}, { immediate: true });
+
+watch(versao, atualizarConta);
+watch(conectado, (online) => {
+  if (online) {
+    atualizarConta();
+    prepararConsultasOffline();
+  }
+});
 
 // Mensagens de erro do carrinho (ex.: estoque insuficiente) somem sozinhas
 watch(
@@ -43,6 +71,18 @@ watch(
   <div class="layout">
 
     <appHeader />
+
+    <p v-if="!conectado || pendencias.length" class="aviso-offline" role="status">
+      <template v-if="!conectado">Sem conexão. Você pode consultar os dados já salvos neste dispositivo.</template>
+      <template v-if="pendencias.length">
+        {{ pendencias.length }} {{ pendencias.length === 1 ? 'alteração pendente' : 'alterações pendentes' }}.
+        {{ sincronizando ? 'Sincronizando…' : 'O envio será feito quando o servidor estiver disponível.' }}
+      </template>
+    </p>
+    <div v-if="erroSincronizacao" class="aviso-offline" role="alert">
+      {{ erroSincronizacao }}
+      <button type="button" class="conta-button" @click="erroSincronizacao = ''">Dispensar</button>
+    </div>
 
     <main>
       <router-view />
@@ -68,6 +108,16 @@ main{
     flex:1;
 }
 
+.aviso-offline {
+  margin: 8px var(--gutter) 0;
+  padding: 10px 14px;
+  border-radius: var(--radius-control);
+  background: var(--surface-accent);
+  color: var(--brand-hover);
+}
+.aviso-offline button {
+  margin-inline-start: 8px;
+}
 .toast-carrinho {
   position: fixed;
   right: 20px;

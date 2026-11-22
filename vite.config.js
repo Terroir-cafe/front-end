@@ -11,7 +11,20 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
-      workbox: { importScripts: ['push.js'] },
+      workbox: {
+        importScripts: ['push.js'],
+        globPatterns: ['**/*.{js,css,html,ico,png,webmanifest}'],
+        navigateFallbackDenylist: [/^\/api\/|^\/media\//],
+        runtimeCaching: [{
+          urlPattern: ({ request }) => request.destination === 'image',
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'terroir-imagens',
+            cacheableResponse: { statuses: [0, 200] },
+            expiration: { maxEntries: 150, maxAgeSeconds: 30 * 24 * 60 * 60 },
+          },
+        }],
+      },
       manifest: {
         id: 'com.terroir-cafe',
         name: 'Terroir Café',

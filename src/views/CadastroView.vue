@@ -24,6 +24,10 @@ function validateForm(){
 }
 
 async function handleRegister(){
+    if (!navigator.onLine) {
+        errorMessage.value = 'Conecte-se para criar sua conta.';
+        return;
+    }
     if (validateForm() === true){
         loading.value = true;
         errorMessage.value = '';

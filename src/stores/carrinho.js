@@ -3,12 +3,9 @@ import { defineStore } from 'pinia';
 import router from '@/router';
 import { useNotificacoesStore } from './notificacoes';
 import { useAuthStore } from '@/stores/auth.js';
-import {
-    getCarrinhoApi,
-    adicionarItemApi,
-    substituirItensApi,
-    finalizarCompraApi,
-} from '@/api/carrinhoApi.js';
+import { getCarrinhoApi, finalizarCompraApi } from '@/api/carrinhoApi.js';
+import { chaveConsulta, contaAtual, lerConsulta, salvarConsulta } from '@/offline/banco';
+import { aplicarCarrinho, conectado, enfileirar, pendencias, sincronizar } from '@/offline/sincronizacao';
 
 const MENSAGEM_PADRAO = 'Não foi possível atualizar o carrinho. Tente novamente.';
 
@@ -55,33 +52,23 @@ function normalizarItem(item) {
 }
 
 export const useCarrinhoStore = defineStore('carrinho', () => {
-    const compraId = ref(null);
-    const itens = ref([]);
-    const carregando = ref(false); // lendo do back-end
-    const salvando = ref(false); // enviando para o back-end
+    const vazio = { id: null, itens: [] };
+    const compra = ref(vazio);
+    const carregando = ref(false);
+    const salvando = ref(false);
     const erro = ref('');
+    let leitura = 0;
 
-    const quantidadeTotal = computed(() =>
-        itens.value.reduce((total, item) => total + item.quantidade, 0)
-    );
-    const subtotal = computed(() =>
-        itens.value.reduce((total, item) => total + item.preco * item.quantidade, 0)
-    );
+    const itensComProduto = computed(() => aplicarCarrinho(compra.value).itens);
+    const itens = computed(() => itensComProduto.value.map(normalizarItem));
+    const quantidadeTotal = computed(() => itens.value.reduce((total, item) => total + item.quantidade, 0));
+    const subtotal = computed(() => itens.value.reduce((total, item) => total + item.preco * item.quantidade, 0));
+    const pendente = computed(() => pendencias.value.some((op) => ['adicionar', 'quantidade'].includes(op.tipo)));
 
-    // o carrinho antigo ficava no localStorage; não é mais usado
-    if (typeof localStorage !== 'undefined') {
-        localStorage.removeItem('terroir-carrinho');
-    }
-
-    function aplicar(compra) {
-        compraId.value = compra.id;
-        itens.value = (compra.itens ?? []).map(normalizarItem);
-    }
-
-    // Zera só o estado local (ex.: ao sair da conta). Não apaga nada no back-end.
     function limpar() {
-        compraId.value = null;
-        itens.value = [];
+        leitura++;
+        compra.value = vazio;
+        carregando.value = false;
         erro.value = '';
     }
 
@@ -89,37 +76,37 @@ export const useCarrinhoStore = defineStore('carrinho', () => {
         erro.value = '';
     }
 
-    // Lê o carrinho do back-end
     async function carregar() {
-        if (!useAuthStore().isAuthenticated) {
+        const conta = contaAtual();
+        if (!conta) {
             limpar();
             return;
         }
-
+        const pedido = ++leitura;
         carregando.value = true;
         try {
-            aplicar(await getCarrinhoApi());
+            const cache = await lerConsulta(chaveConsulta(conta, '/compras/carrinho/')).catch(() => null);
+            if (pedido !== leitura || conta !== contaAtual()) return;
+            if (cache) compra.value = cache;
+            if (pendente.value || !navigator.onLine) return;
+            const dados = await getCarrinhoApi({ contaEsperada: conta });
+            if (pedido === leitura && conta === contaAtual()) compra.value = dados;
         } catch (e) {
-            console.error(e);
-            erro.value = extrairMensagem(e);
+            if (pedido === leitura && e.response) erro.value = extrairMensagem(e);
         } finally {
-            carregando.value = false;
+            if (pedido === leitura) carregando.value = false;
         }
     }
 
-    // Envia uma alteração e já recebe o carrinho completo de volta
-    async function enviar(requisicao) {
+    async function enviar(tipo, produto, quantidade) {
         if (salvando.value) return false;
-
         salvando.value = true;
         erro.value = '';
         try {
-            aplicar(await requisicao());
-            useNotificacoesStore().atualizar();
+            await enfileirar(tipo, { produto: produto.id, quantidade }, produto);
             return true;
         } catch (e) {
-            console.error(e);
-            erro.value = extrairMensagem(e);
+            erro.value = e.message || MENSAGEM_PADRAO;
             return false;
         } finally {
             salvando.value = false;
@@ -132,46 +119,55 @@ export const useCarrinhoStore = defineStore('carrinho', () => {
             router.push('/login');
             return false;
         }
-
-        return enviar(() => adicionarItemApi(produto.id, quantidade));
+        const atual = itensComProduto.value.find((item) => item.produto.id === produto.id);
+        if ((atual?.quantidade ?? 0) + quantidade > produto.quantidade) {
+            erro.value = 'Quantidade indisponível no estoque consultado.';
+            return false;
+        }
+        return enviar('adicionar', produto, quantidade);
     }
 
     async function atualizarQuantidade(id, quantidade) {
-        if (quantidade <= 0) return remover(id);
-        if (!compraId.value) return false;
-
-        const novosItens = itens.value.map((item) => ({
-            produto: item.id,
-            quantidade: item.id === id ? quantidade : item.quantidade,
-        }));
-
-        return enviar(() => substituirItensApi(compraId.value, novosItens));
+        const item = itensComProduto.value.find((entrada) => entrada.produto.id === id);
+        if (!item) return false;
+        return enviar('quantidade', item.produto, Math.max(0, quantidade));
     }
 
-    async function remover(id) {
-        if (!compraId.value) return false;
+    const remover = (id) => atualizarQuantidade(id, 0);
 
-        const novosItens = itens.value
-            .filter((item) => item.id !== id)
-            .map((item) => ({ produto: item.id, quantidade: item.quantidade }));
-
-        return enviar(() => substituirItensApi(compraId.value, novosItens));
-    }
-
-    // Envia o carrinho para finalização no back-end
     async function finalizar() {
-        if (!compraId.value || salvando.value) return false;
+        const conta = contaAtual();
+        if (!conta || salvando.value || !navigator.onLine) return false;
 
         salvando.value = true;
         erro.value = '';
         try {
-            await finalizarCompraApi(compraId.value);
+            await sincronizar();
+            if (pendente.value) {
+                erro.value = 'Aguarde a sincronização do carrinho para finalizar.';
+                return false;
+            }
+            const dados = await getCarrinhoApi({ semCache: true, contaEsperada: conta });
+            if (!dados.id || !dados.itens.length) {
+                limpar();
+                erro.value = 'O carrinho está vazio no servidor.';
+                return false;
+            }
+            const resumo = (carrinho) => JSON.stringify(carrinho.itens.map(
+                (item) => [item.produto.id, item.quantidade, Number(item.preco)],
+            ).sort((a, b) => a[0] - b[0]));
+            if (dados.id !== compra.value.id || resumo(dados) !== resumo(compra.value)) {
+                compra.value = dados;
+                erro.value = 'O carrinho foi atualizado. Confira os itens antes de finalizar.';
+                return false;
+            }
+            await finalizarCompraApi(dados.id, conta);
+            limpar();
+            await salvarConsulta(chaveConsulta(conta, '/compras/carrinho/'), vazio).catch(() => {});
             useNotificacoesStore().atualizar();
-            limpar(); // essa compra deixou de ser carrinho; o próximo começa vazio
             return true;
         } catch (e) {
-            console.error(e);
-            erro.value = extrairMensagem(e);
+            erro.value = e.response ? extrairMensagem(e) : 'Conecte-se para finalizar a compra.';
             return false;
         } finally {
             salvando.value = false;
@@ -185,6 +181,8 @@ export const useCarrinhoStore = defineStore('carrinho', () => {
         erro,
         quantidadeTotal,
         subtotal,
+        pendente,
+        conectado,
         carregar,
         adicionar,
         atualizarQuantidade,

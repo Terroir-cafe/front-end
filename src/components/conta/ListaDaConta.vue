@@ -1,5 +1,6 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+import { versao } from '@/offline/sincronizacao'
 
 const props = defineProps({
   carregar: { type: Function, required: true },
@@ -11,19 +12,22 @@ const pagina = ref(1)
 const totalPaginas = ref(1)
 const carregando = ref(true)
 const erro = ref(false)
+let leitura = 0
 
 async function abrir(destino = pagina.value) {
+  const pedido = ++leitura
   carregando.value = true
   erro.value = false
   try {
     const dados = await props.carregar(destino)
+    if (pedido !== leitura) return
     itens.value = dados.results
     pagina.value = dados.page
     totalPaginas.value = dados.total_pages
   } catch {
-    erro.value = true
+    if (pedido === leitura) erro.value = true
   } finally {
-    carregando.value = false
+    if (pedido === leitura) carregando.value = false
   }
 }
 
@@ -33,6 +37,7 @@ function remover(id) {
 }
 
 onMounted(() => abrir())
+watch(versao, () => abrir())
 </script>
 
 <template>
