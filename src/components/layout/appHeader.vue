@@ -81,7 +81,7 @@ onUnmounted(() => clearInterval(consultaNotificacoes))
         <RouterLink v-if="auth.isAuthenticated" to="/favoritos" aria-label="Produtos favoritos" title="Favoritos">
           <SvgIcon type="mdi" :path="mdiHeartOutline" />
         </RouterLink>
-        <RouterLink v-if="auth.isAuthenticated" to="/notificacoes" class="header-notificacoes" title="Notificações"
+        <RouterLink v-if="auth.isAuthenticated" to="/notificacoes" title="Notificações"
           :aria-label="`Notificações, ${notificacoes.naoLidas} não lidas`">
           <SvgIcon type="mdi" :path="mdiBellOutline" />
           <span v-if="notificacoes.naoLidas" class="indicador" aria-hidden="true">{{ Math.min(notificacoes.naoLidas, 99) }}{{ notificacoes.naoLidas > 99 ? '+' : '' }}</span>
@@ -237,7 +237,13 @@ onUnmounted(() => clearInterval(consultaNotificacoes))
   }
 }
 @media (max-width: 600px) {
-  .header-acoes .header-notificacoes {
+  .header-inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .marca {
+    justify-self: center;
+  }
+  .header-acoes {
     display: none;
   }
 }

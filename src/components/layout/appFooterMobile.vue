@@ -1,10 +1,12 @@
 <script setup>
-import { mdiCartOutline, mdiHomeVariant, mdiPackageVariant, mdiAccountCircle, mdiBellOutline } from '@mdi/js'
+import { mdiCartOutline, mdiHomeVariant, mdiPackageVariant, mdiAccountCircle, mdiBellOutline, mdiHeartOutline } from '@mdi/js'
 import SvgIcon from '@jamescoyle/vue-icon'
+import { useCarrinhoStore } from '@/stores/carrinho'
 import { useAuthStore } from '@/stores/auth'
 import { useNotificacoesStore } from '@/stores/notificacoes'
 
 const auth = useAuthStore()
+const carrinho = useCarrinhoStore()
 const notificacoes = useNotificacoesStore()
 </script>
 
@@ -20,20 +22,31 @@ const notificacoes = useNotificacoesStore()
             <span>Produtos</span>
         </RouterLink>
 
-        <RouterLink to="/cart" class="footer-link" active-class="footer-link-active">
-            <SvgIcon type="mdi" :path="mdiCartOutline" class="footer-icon" />
+        <RouterLink v-if="auth.isAuthenticated" to="/favoritos" class="footer-link" active-class="footer-link-active">
+            <SvgIcon type="mdi" :path="mdiHeartOutline" class="footer-icon" aria-hidden="true" />
+            <span>Favoritos</span>
+        </RouterLink>
+
+        <RouterLink to="/cart" class="footer-link" active-class="footer-link-active"
+            :aria-label="`Carrinho, ${carrinho.quantidadeTotal} itens`">
+            <span class="footer-icone-com-contador" aria-hidden="true">
+                <SvgIcon type="mdi" :path="mdiCartOutline" class="footer-icon" />
+                <span v-if="carrinho.quantidadeTotal" class="footer-contador">
+                    {{ carrinho.quantidadeTotal > 99 ? '99+' : carrinho.quantidadeTotal }}
+                </span>
+            </span>
             <span>Carrinho</span>
         </RouterLink>
 
         <RouterLink v-if="auth.isAuthenticated" to="/notificacoes" class="footer-link" active-class="footer-link-active"
             :aria-label="`Notificações, ${notificacoes.naoLidas} não lidas`">
-            <span class="footer-sino" aria-hidden="true">
+            <span class="footer-icone-com-contador" aria-hidden="true">
                 <SvgIcon type="mdi" :path="mdiBellOutline" class="footer-icon" />
                 <span v-if="notificacoes.naoLidas" class="footer-contador">
                     {{ notificacoes.naoLidas > 99 ? '99+' : notificacoes.naoLidas }}
                 </span>
             </span>
-            <span>Notificações</span>
+            <span>Alertas</span>
         </RouterLink>
 
         <RouterLink to="/usuario" class="footer-link" active-class="footer-link-active">
@@ -93,7 +106,7 @@ const notificacoes = useNotificacoesStore()
         color: var(--caramelo);
     }
 
-    .footer-sino {
+    .footer-icone-com-contador {
         position: relative;
         display: flex;
     }
