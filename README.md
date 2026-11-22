@@ -36,3 +36,22 @@ npm run dev
 ```sh
 npm run build
 ```
+
+## Uso offline
+
+Depois da primeira visita com conexão, a versão de produção pode abrir offline.
+O catálogo, a busca, as imagens e os dados da conta usam o conteúdo já
+consultado neste dispositivo. Faça login antes de ficar sem conexão para
+acessar os dados da conta. Páginas e imagens que ainda não foram baixadas
+podem ficar indisponíveis offline.
+
+Alterações do carrinho, dos favoritos, da foto de perfil, da leitura de
+notificações e da desativação dos alertas ficam numa fila local por conta. A fila é enviada quando o site
+aberto recupera a conexão ou na próxima abertura online com a mesma conta.
+O servidor confere estoque e permissões e aplica cada operação uma vez.
+Uma alteração rejeitada aparece como aviso no site.
+
+Cadastro, login, ativação dos alertas de sistema e finalização de compra
+precisam de conexão. Para testar a PWA offline, use a compilação de produção
+em HTTPS ou localhost. No back-end, aplique a migração `0027` antes de testar
+a sincronização.

@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, useId } from 'vue'
 
 const props = defineProps({
   modelValue: {
@@ -12,9 +12,11 @@ const props = defineProps({
     default: 'text'
   },
   placeholder: String,
+  autocomplete: String,
   required: Boolean
 })
 
+const id = useId()
 const emit = defineEmits(['update:modelValue', 'input'])
 
 const value = computed({
@@ -28,13 +30,15 @@ const value = computed({
 
 <template>
   <div class="app-input">
-    <label v-if="label" class="label">
+    <label v-if="label" :for="id" class="label">
       {{ label }}
       <span v-if="required">*</span>
     </label>
 
     <input
+      :id="id"
       v-model="value"
+      :autocomplete="autocomplete"
       :type="type"
       :placeholder="placeholder"
       :required="required"
@@ -49,7 +53,7 @@ const value = computed({
   margin-bottom: 4px;
   font-size: 14px;
   font-weight: bold;
-  color: #111;
+  color: var(--ink);
 }
 .required{
   color: red;
@@ -57,17 +61,16 @@ const value = computed({
 input{
   width:100%;
   min-height: 48px;
-  padding: 10px;
+  padding: 10px 14px;
   font-size: 16px;
-  border: 4px solid #c5c5c5;
-  border-radius: 56px;
-  background: white;
-  color: #111;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--ink);
   transition: border-color 0.3s;
 }
 input:focus{
-  border-color: #DDb892;
-  outline: none;
+  border-color: var(--brand);
 }
 
 </style>
